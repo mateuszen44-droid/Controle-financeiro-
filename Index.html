@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Controle de Mateus e Thais</title>
+
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Controle" />
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.10);
+      --text:#eaf0ff;
+      --muted:#a7b4d6;
+      --good:#45e2a8;
+      --bad:#ff5c77;
+      --warn:#ffd166;
+      --accent:#6aa9ff;
+      --shadow:0 14px 40px rgba(0,0,0,.35);
+      --r:18px;
+      --r2:14px;
+      --pad:16px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 900px at 20% -10%, rgba(106,169,255,.25), transparent 55%),
+        radial-gradient(900px 700px at 100% 20%, rgba(69,226,168,.16), transparent 55%),
+        radial-gradient(900px 700px at 0% 80%, rgba(255,92,119,.12), transparent 50%),
+        linear-gradient(180deg, #070b14, var(--bg));
+      padding-bottom: 92px;
+    }
+
+    .wrap{max-width:980px;margin:0 auto;padding:18px 16px 0}
+    .topbar{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;
+      padding:10px 6px 16px;
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(106,169,255,.9), rgba(69,226,168,.8));
+      box-shadow: var(--shadow);
+      display:grid;place-items:center;
+      font-weight:800;color:#0b1220;
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:"";
+      position:absolute;inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 50%);
+      transform: rotate(25deg);
+    }
+    .titlebox{line-height:1.05}
+    h1{font-size:18px;margin:0}
+    .sub{color:var(--muted);font-size:12.5px;margin-top:4px}
+    .pill{
+      display:flex;align-items:center;gap:8px;
+      padding:9px 12px;border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      font-size:12.5px;color:var(--muted);
+      user-select:none;
+    }
+    .dot{width:10px;height:10px;border-radius:99px;background:var(--good);box-shadow:0 0 0 6px rgba(69,226,168,.13)}
+    .dot.off{background:var(--warn);box-shadow:0 0 0 6px rgba(255,209,102,.12)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+      align-items:start;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card .hd{
+      padding:14px 16px 10px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .card .hd h2{margin:0;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .card .bd{padding:0 16px 16px}
+
+    .statrow{
+      display:grid;grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 700px){
+      .statrow{grid-template-columns: repeat(2, 1fr)}
+    }
+    .stat{
+      background: var(--card2);
+      border:1px solid var(--line);
+      border-radius: var(--r2);
+      padding:12px;
+      min-height:78px;
+    }
+    .stat .k{font-size:12px;color:var(--muted)}
+    .stat .v{margin-top:8px;font-size:18px;font-weight:800;letter-spacing:-.02em}
+    .v.good{color:var(--good)}
+    .v.bad{color:var(--bad)}
+
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .select, .input{
+      appearance:none;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--line);
+      color:var(--text);
+      border-radius: 12px;
+      padding:10px 12px;
+      font-size:14px;
+      outline:none;
+      width:100%;
+    }
+    .select{cursor:pointer}
+    .field{flex:1;min-width:160px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:11px 14px;border-radius:14px;
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--line);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+      user-select:none;
+      text-decoration:none;
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(106,169,255,.9), rgba(69,226,168,.8));
+      border-color: transparent;
+      color:#07101f;
+    }
+    .btn.danger{
+      background: rgba(255,92,119,.14);
+      border-color: rgba(255,92,119,.25);
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn.small{padding:9px 12px;border-radius:12px;font-size:13px}
+    .btn.wide{width:100%}
+
+    .list{
+      margin-top:10px;
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      overflow:hidden;
+    }
+    .item{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      padding:12px 14px;
+      background: rgba(255,255,255,.04);
+      border-top:1px solid var(--line);
+    }
+    .item:first-child{border-top:none}
+    .meta{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+      color:var(--muted);
+      font-size:12.5px;
+      margin-top:4px;
+    }
+    .tag{
+      padding:4px 8px;border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color:var(--muted);
+      font-size:12px;
+    }
+    .amt{font-weight:900}
+    .amt.good{color:var(--good)}
+    .amt.bad{color:var(--bad)}
+    .empty{
+      padding:18px;color:var(--muted);text-align:center;
+      background: rgba(255,255,255,.03);
+    }
+
+    /* Tabs */
+    .tabs{
+      position:fixed;left:0;right:0;bottom:0;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(10,14,25,.72);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,.10);
+      display:flex;justify-content:center;
+      z-index:999;
+    }
+    .tabbar{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:8px;
+    }
+    .tab{
+      text-align:center;
+      padding:10px 8px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      cursor:pointer;
+      user-select:none;
+      font-size:12.5px;
+    }
+    .tab .ic{font-size:18px;display:block;margin-bottom:4px}
+    .tab.active{
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      border-color: rgba(255,255,255,.16);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    .view{display:none}
+    .view.active{display:block}
+
+    /* Modal */
+    .modalback{
+      position:fixed;inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 14px;
+      z-index:1000;
+    }
+    .modalback.show{display:flex}
+    .modal{
+      width:min(980px, 100%);
+      background: rgba(12,17,30,.92);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      overflow:hidden;
+      backdrop-filter: blur(18px);
+    }
+    .modal .mhd{
+      padding:14px 16px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .modal .mhd strong{font-size:15px}
+    .modal .mbd{padding:14px 16px 16px}
+    .closex{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:650px){.two{grid-template-columns:1fr}}
+
+    /* Toast */
+    .toast{
+      position:fixed;left:50%;bottom:104px;transform:translateX(-50%);
+      background: rgba(12,17,30,.92);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      padding:10px 12px;border-radius:14px;
+      box-shadow: var(--shadow);
+      display:none;
+      z-index:1200;
+      font-size:13px;
+    }
+    .toast.show{display:block}
+    .muted{color:var(--muted)}
+    a.link{color:var(--accent);text-decoration:none}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:12px 0}
+    .right{display:flex;gap:8px;align-items:center}
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color:var(--muted);
+      font-size:12.5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">MT</div>
+        <div class="titlebox">
+          <h1>Controle de Mateus e Thais</h1>
+          <div class="sub">Seu controle financeiro pessoal • offline</div>
+        </div>
+      </div>
+      <div class="pill" id="netPill"><span class="dot" id="netDot"></span><span id="netTxt">Online</span></div>
+    </div>
+
+    <!-- VIEW: RESUMO -->
+    <section class="view active" id="view-resumo">
+      <div class="grid">
+        <div class="card">
+          <div class="hd">
+            <h2>Resumo do mês</h2>
+            <div class="right">
+              <span class="chip" id="monthLabel"></span>
+              <button class="btn small" id="prevMonth">◀</button>
+              <button class="btn small" id="nextMonth">▶</button>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="row">
+              <div class="field">
+                <label class="muted" style="font-size:12px">Filtro</label>
+                <select class="select" id="ownerFilter">
+                  <option value="AMBOS">Ambos</option>
+                  <option value="MATEUS">Mateus</option>
+                  <option value="THAIS">Thais</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="muted" style="font-size:12px">Busca</label>
+                <input class="input" id="searchInput" placeholder="Ex.: mercado, aluguel, gasolina..." />
+              </div>
+              <div class="field" style="min-width:220px">
+                <label class="muted" style="font-size:12px">Ação</label>
+                <button class="btn primary wide" id="btnAdd">＋ Novo lançamento</button>
+              </div>
+            </div>
+
+            <div class="statrow">
+              <div class="stat">
+                <div class="k">Saldo</div>
+                <div class="v" id="statSaldo">R$ 0,00</div>
+              </div>
+              <div class="stat">
+                <div class="k">Entradas</div>
+                <div class="v good" id="statEntradas">R$ 0,00</div>
+              </div>
+              <div class="stat">
+                <div class="k">Saídas</div>
+                <div class="v bad" id="statSaidas">R$ 0,00</div>
+              </div>
+              <div class="stat">
+                <div class="k">Resultado</div>
+                <div class="v" id="statResultado">R$ 0,00</div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="row">
+              <button class="btn" id="btnExport">⬇ Exportar backup</button>
+              <label class="btn" for="importFile">⬆ Importar backup</label>
+              <input id="importFile" type="file" accept="application/json" style="display:none" />
+              <button class="btn danger" id="btnReset">🗑 Zerar tudo</button>
+            </div>
+
+            <p class="muted" style="margin:10px 0 0;font-size:12.5px">
+              Dica: depois de salvar no iPhone, funciona <b>offline</b>. Exporta backup pra não perder.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="hd">
+            <h2>Últimos lançamentos</h2>
+            <button class="btn small" id="btnRefresh">⟳ Atualizar</button>
+          </div>
+          <div class="bd">
+            <div class="list" id="recentList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+
+      <div class="card">
+        <div class="hd">
+          <h2>Movimentos do mês</h2>
+          <div class="right">
+            <span class="chip" id="countLabel">0 itens</span>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="list" id="monthList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: LANÇAR -->
+    <section class="view" id="view-lancar">
+      <div class="card">
+        <div class="hd">
+          <h2>Novo lançamento</h2>
+          <button class="btn primary" id="btnAdd2">＋ Adicionar</button>
+        </div>
+        <div class="bd">
+          <p class="muted" style="margin-top:0">
+            Use o botão “Adicionar” para abrir o formulário completo.
+          </p>
+          <div class="list">
+            <div class="empty">Clique em <b>Adicionar</b> para lançar entrada/saída.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: MOVIMENTOS -->
+    <section class="view" id="view-mov">
+      <div class="card">
+        <div class="hd">
+          <h2>Todos os movimentos</h2>
+          <div class="right">
+            <button class="btn small" id="btnSortDate">📅 Data</button>
+            <button class="btn small" id="btnSortValue">💰 Valor</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <div class="field">
+              <label class="muted" style="font-size:12px">Filtro</label>
+              <select class="select" id="ownerFilter2">
+                <option value="AMBOS">Ambos</option>
+                <option value="MATEUS">Mateus</option>
+                <option value="THAIS">Thais</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="muted" style="font-size:12px">Busca</label>
+              <input class="input" id="searchInput2" placeholder="Ex.: luz, internet, salário..." />
+            </div>
+          </div>
+
+          <div class="list" id="allList" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: RELATÓRIOS -->
+    <section class="view" id="view-rel">
+      <div class="card">
+        <div class="hd">
+          <h2>Relatórios (mês)</h2>
+          <span class="chip" id="relMonthLabel"></span>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <div class="field">
+              <label class="muted" style="font-size:12px">Filtro</label>
+              <select class="select" id="ownerFilter3">
+                <option value="AMBOS">Ambos</

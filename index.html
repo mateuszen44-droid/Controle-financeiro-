@@ -2,11 +2,31 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Controle de Mateus e Thais</title>
+
   <meta name="theme-color" content="#0b1220" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Controle de Mateus e Thais</title>
+
+  <!-- Ícone com cifrão (funciona no navegador; iPhone tela inicial às vezes pede PNG separado) -->
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="%2366a8ff"/>
+        <stop offset="1" stop-color="%2345e2a8"/>
+      </linearGradient>
+    </defs>
+    <rect width="256" height="256" rx="56" fill="%230b1220"/>
+    <rect x="18" y="18" width="220" height="220" rx="52" fill="url(%23g)" opacity="0.18"/>
+    <circle cx="128" cy="128" r="74" fill="url(%23g)" opacity="0.16"/>
+    <path d="M148 76c0-6-4-10-10-10h-6V56c0-5-4-8-8-8s-8 3-8 8v10h-7c-18 0-33 12-33 29 0 15 10 25 26 29l14 3c11 2 16 6 16 14 0 8-8 14-18 14h-23c-6 0-10 4-10 10s4 10 10 10h15v10c0 5 4 8 8 8s8-3 8-8v-10h8c20 0 35-12 35-30 0-16-11-26-28-30l-14-3c-10-2-14-6-14-12 0-8 7-13 17-13h21c6 0 10-4 10-10z"
+      fill="%23eaf0ff"/>
+  </svg>' />
+
+  <!-- Se você já tem manifest/sw no repo, mantém funcionando -->
+  <link rel="manifest" href="manifest.webmanifest" />
 
   <style>
     :root{
@@ -14,1250 +34,824 @@
       --card: rgba(255,255,255,.06);
       --card2: rgba(255,255,255,.08);
       --line: rgba(255,255,255,.10);
-      --text:#eaf0ff;
+      --text: #eaf0ff;
       --muted:#a7b4d6;
-      --good:#31d07c;
-      --bad:#ff5d7a;
-      --accent:#4c8dff;
-      --shadow: 0 16px 50px rgba(0,0,0,.35);
-      --r:18px;
-      --tap:50px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --good:#45e2a8;
+      --bad:#ff6b6b;
+      --accent:#66a8ff;
+      --shadow: 0 18px 45px rgba(0,0,0,.45);
+      --radius: 22px;
+      --radius2: 18px;
     }
+
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family: var(--font);
-      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
       background:
-        radial-gradient(900px 450px at 10% 0%, rgba(76,141,255,.20), transparent 60%),
-        radial-gradient(900px 450px at 90% 10%, rgba(49,208,124,.16), transparent 60%),
-        radial-gradient(900px 450px at 60% 100%, rgba(255,93,122,.14), transparent 60%),
-        var(--bg);
-      padding-bottom: 92px;
+        radial-gradient(1200px 700px at 30% -10%, rgba(102,168,255,.20), transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, rgba(69,226,168,.16), transparent 55%),
+        linear-gradient(180deg, #09101f, var(--bg));
+      padding: 18px 14px 110px;
+      padding-bottom: calc(110px + env(safe-area-inset-bottom));
     }
-    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 0}
-    header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:10px 4px 14px;
-      position:sticky;top:0;z-index:20;
-      backdrop-filter: blur(14px);
-      background: linear-gradient(180deg, rgba(11,18,32,.82), rgba(11,18,32,.20));
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-    .brand{display:flex;align-items:center;gap:12px;min-width:0}
-    .logo{
-      width:44px;height:44px;border-radius:14px;
-      background: linear-gradient(135deg, rgba(76,141,255,.9), rgba(49,208,124,.8));
-      box-shadow: var(--shadow);
-      display:grid;place-items:center;
-      font-weight:900;color:#08111f;
-      flex:0 0 auto;
-      position:relative;overflow:hidden;
-    }
-    .logo:after{
-      content:"";position:absolute;inset:-50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 40%);
-      transform: rotate(18deg);
-    }
-    .titlebox{min-width:0}
-    h1{margin:0;font-size:17px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .sub{margin:4px 0 0;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 12px;border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid var(--line);
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      font-size:12px;color:var(--muted);
-      user-select:none;
-      white-space:nowrap;
-    }
-    .dot{width:10px;height:10px;border-radius:99px;background:var(--good);box-shadow:0 0 0 6px rgba(49,208,124,.10)}
-    .dot.off{background:#ffd166;box-shadow:0 0 0 6px rgba(255,209,102,.10)}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:start}
-    @media (max-width:860px){.grid{grid-template-columns:1fr}}
 
+    .wrap{max-width:900px;margin:0 auto}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      padding: 10px 6px 18px;
+    }
+    .title{
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      margin: 0;
+    }
+    .sub{
+      margin:6px 0 0;
+      color:rgba(234,240,255,.65);
+      font-weight:700;
+      font-size:12px;
+    }
+
+    .grid{display:grid;grid-template-columns: 1fr;gap: 14px;}
     .card{
-      background: var(--card);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
       border:1px solid var(--line);
-      border-radius: var(--r);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
     .card .hd{
-      padding:14px 14px 10px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+      padding: 14px 16px 10px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
-    .card .hd h2{margin:0;font-size:14px;letter-spacing:.2px}
-    .card .hd small{display:block;margin-top:4px;color:var(--muted);font-size:12px}
-    .card .bd{padding:14px}
+    .card .hd h2{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: .12em;
+      color: rgba(234,240,255,.78);
+      font-weight: 900;
+    }
+    .card .bd{padding: 0 16px 16px;}
 
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .row > *{flex:1;min-width:160px}
-    .btn{
-      height: var(--tap);
-      padding:0 14px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
-      font-weight:800;
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn:active{transform:translateY(1px)}
-    .btn.primary{
-      border-color: rgba(76,141,255,.35);
-      background: rgba(76,141,255,.16);
-    }
-    .btn.danger{
-      border-color: rgba(255,93,122,.30);
-      background: rgba(255,93,122,.12);
-    }
-    .btn.small{height:42px;border-radius:12px;font-size:13px;padding:0 12px;flex:0}
-    .btn.wide{width:100%}
-
-    label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
-    input,select,textarea{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      color:var(--text);
-      outline:none;
-      font-size:14px;
-    }
-    textarea{min-height:86px;resize:vertical}
-    input::placeholder,textarea::placeholder{color: rgba(167,180,214,.65)}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width:520px){.two{grid-template-columns:1fr}}
-
-    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    @media (max-width:520px){.kpis{grid-template-columns:1fr}}
     .kpi{
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:16px;
-      padding:12px;
-      min-height:86px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
     }
-    .kpi .t{color:var(--muted);font-size:12px}
-    .kpi .v{margin-top:8px;font-size:18px;font-weight:900}
-    .good{color:var(--good)}
-    .bad{color:var(--bad)}
-    .muted{color:var(--muted)}
-    .mono{font-family:var(--mono)}
+    .kpi .box{
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      border-radius: 18px;
+      padding: 12px;
+      min-height: 76px;
+    }
+    .kpi .lbl{font-size:12px;color:var(--muted);font-weight:800}
+    .kpi .val{font-size:20px;font-weight:950;margin-top:6px}
+    .kpi .val.good{color:var(--good)}
+    .kpi .val.bad{color:var(--bad)}
 
-    .list{display:flex;flex-direction:column;gap:10px}
-    .item{
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:16px;
-      padding:12px;
-      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
     }
-    .item .left{min-width:0}
-    .item .title{margin:0;font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .item .meta{margin-top:6px;color:var(--muted);font-size:12px;display:flex;gap:10px;flex-wrap:wrap}
-    .tag{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:4px 8px;border-radius:999px;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.10);
-      color:var(--muted);font-size:12px;
-    }
-    .amount{font-weight:1000;white-space:nowrap}
-    .divider{height:1px;background:rgba(255,255,255,.08);margin:12px 0}
-    .empty{
-      padding:14px;
-      border-radius:16px;
-      background: rgba(0,0,0,.14);
-      border:1px dashed rgba(255,255,255,.16);
-      color:var(--muted);
-      text-align:center;
-    }
+    .form .full{grid-column: 1 / -1}
 
-    .view{display:none}
-    .view.active{display:block}
+    input, select, textarea, button{font: inherit;color: var(--text);}
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.22);
+      outline: none;
+    }
+    textarea{min-height: 84px; resize: vertical;}
 
-    /* metas */
-    .progressWrap{
-      height:12px;border-radius:999px;background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.10);
+    .btn{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(102,168,255,.16);
+      font-weight: 950;
+      cursor: pointer;
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn.ghost{background: rgba(0,0,0,.18)}
+    .btn.good{background: rgba(69,226,168,.18)}
+    .btn.bad{background: rgba(255,107,107,.18)}
+    .btnbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 12px;
       overflow:hidden;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.16);
     }
-    .progressBar{
-      height:100%;width:0%;
-      background: linear-gradient(90deg, rgba(49,208,124,.85), rgba(76,141,255,.80));
+    th, td{
+      padding: 10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      font-size: 13px;
+      text-align:left;
+      vertical-align: top;
+    }
+    th{color:rgba(234,240,255,.75);font-weight:950}
+    tr:last-child td{border-bottom:none}
+
+    .tag{
+      display:inline-flex;align-items:center;gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      font-weight: 950;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .tag.good{color:var(--good)}
+    .tag.bad{color:var(--bad)}
+    .tag.mid{color:rgba(234,240,255,.85)}
+
+    .hide{display:none !important}
+
+    .note{
+      color: rgba(234,240,255,.72);
+      font-size: 12px;
+      margin-top: 10px;
+      line-height: 1.4;
     }
 
-    /* bottom tabs */
+    /* Tabs */
     .tabs{
-      position:fixed;left:0;right:0;bottom:0;z-index:50;
-      background: rgba(10,16,30,.80);
-      backdrop-filter: blur(14px);
-      border-top:1px solid rgba(255,255,255,.10);
-      padding:10px 10px calc(12px + env(safe-area-inset-bottom));
+      position: fixed;
+      left: 0; right:0; bottom: 0;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(5,9,18,.75);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(255,255,255,.10);
     }
-    .tabs .bar{
-      max-width:980px;margin:0 auto;
-      display:grid;grid-template-columns:repeat(5,1fr);gap:8px;
+    .tabs .inner{
+      max-width: 900px;
+      margin: 0 auto;
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
     }
     .tab{
-      height:56px;
-      border-radius:18px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap: 6px;
+      padding: 10px 8px;
+      border-radius: 16px;
       border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color:var(--muted);
-      font-weight:900;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+      background: rgba(0,0,0,.18);
+      color: rgba(234,240,255,.85);
+      font-weight: 950;
+      font-size: 12px;
       cursor:pointer;
       user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      font-size:11px;
     }
     .tab.active{
-      background: rgba(76,141,255,.14);
-      border-color: rgba(76,141,255,.35);
-      color: var(--text);
+      background: rgba(102,168,255,.18);
+      border-color: rgba(102,168,255,.32);
+      color: #fff;
     }
     .tab .ico{font-size:18px;line-height:1}
 
-    /* toast */
-    .toast{
-      position:fixed;left:50%;transform:translateX(-50%);
-      bottom: 96px;z-index:80;
-      background: rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.12);
-      color:var(--text);
-      padding:10px 12px;border-radius:999px;
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow);
-      max-width: calc(100% - 24px);
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-      opacity:0;pointer-events:none;
-      transition: opacity .2s ease, transform .2s ease;
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+    .progress{
+      margin-top:8px;
+      height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .progress > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(102,168,255,.65), rgba(69,226,168,.65));
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo">MT</div>
-        <div class="titlebox">
-          <h1>Controle de Mateus e Thais</h1>
-          <div class="sub">Brasil (R$) • Offline • Sem senha</div>
+    <div class="top">
+      <div>
+        <h1 class="title">Controle de Mateus e Thais</h1>
+        <div class="sub">Brasil • sem senha • salvo no aparelho</div>
+      </div>
+    </div>
+
+    <!-- PÁGINA: HOJE -->
+    <section id="page-hoje" class="grid">
+      <div class="card">
+        <div class="hd"><h2>RESUMO</h2></div>
+        <div class="bd">
+          <div class="kpi">
+            <div class="box">
+              <div class="lbl">Saldo atual</div>
+              <div id="kpi-saldo" class="val good">R$ 0,00</div>
+            </div>
+            <div class="box">
+              <div class="lbl">Gastos (mês)</div>
+              <div id="kpi-gastos" class="val bad">R$ 0,00</div>
+            </div>
+            <div class="box">
+              <div class="lbl">Investimentos</div>
+              <div id="kpi-invest" class="val">R$ 0,00</div>
+            </div>
+            <div class="box">
+              <div class="lbl">Reserva emergência</div>
+              <div id="kpi-reserva" class="val">R$ 0,00</div>
+            </div>
+            <div class="box">
+              <div class="lbl">Viagem final do ano</div>
+              <div id="kpi-viagem" class="val">R$ 0,00</div>
+            </div>
+            <div class="box">
+              <div class="lbl">Troca do carro</div>
+              <div id="kpi-carro" class="val">R$ 0,00</div>
+            </div>
+          </div>
+
+          <div class="btnbar">
+            <button class="btn good" onclick="abrir('page-mov')">+ Adicionar</button>
+            <button class="btn ghost" onclick="abrir('page-metas')">Metas / Caixinhas</button>
+            <button class="btn ghost" onclick="abrir('page-config')">Config</button>
+          </div>
         </div>
       </div>
-      <div class="pill" title="Status de conexão (não afeta os dados)">
-        <span class="dot" id="netDot"></span>
-        <span id="netTxt">offline</span>
+
+      <div class="card">
+        <div class="hd"><h2>ÚLTIMOS LANÇAMENTOS</h2></div>
+        <div class="bd">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-ultimos">
+              <tr><td colspan="4" style="color:rgba(234,240,255,.65)">Sem lançamentos ainda.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </header>
+    </section>
 
-    <!-- ====== VIEWS ====== -->
-    <main>
-      <!-- RESUMO -->
-      <section class="view active" id="view-resumo">
-        <div class="grid">
-          <div class="card">
-            <div class="hd">
-              <div>
-                <h2>Resumo do mês</h2>
-                <small id="monthLabel">—</small>
-              </div>
-              <div class="row" style="flex:0;gap:8px">
-                <button class="btn small" id="prevMonth">◀</button>
-                <button class="btn small" id="nextMonth">▶</button>
-              </div>
+    <!-- PÁGINA: MOVIMENTAÇÕES -->
+    <section id="page-mov" class="grid hide">
+      <div class="card">
+        <div class="hd"><h2>ADICIONAR ENTRADA / SAÍDA</h2></div>
+        <div class="bd">
+          <div class="form">
+            <div>
+              <select id="m-tipo" onchange="atualizarCategorias()">
+                <option value="receita">Entrada (Receita)</option>
+                <option value="gasto">Saída (Gasto)</option>
+              </select>
             </div>
-            <div class="bd">
-              <div class="kpis">
-                <div class="kpi">
-                  <div class="t">Entradas</div>
-                  <div class="v good" id="kIncome">R$ 0,00</div>
-                  <div class="muted" style="font-size:12px;margin-top:6px">Recebidos no mês</div>
-                </div>
-                <div class="kpi">
-                  <div class="t">Saídas</div>
-                  <div class="v bad" id="kExpense">R$ 0,00</div>
-                  <div class="muted" style="font-size:12px;margin-top:6px">Gastos no mês</div>
-                </div>
-                <div class="kpi">
-                  <div class="t">Saldo</div>
-                  <div class="v" id="kNet">R$ 0,00</div>
-                  <div class="muted" style="font-size:12px;margin-top:6px">Entradas − Saídas</div>
-                </div>
-              </div>
+            <div>
+              <input id="m-data" type="date" />
+            </div>
 
-              <div class="divider"></div>
+            <div class="full">
+              <select id="m-cat-select"></select>
+            </div>
 
-              <div class="row">
-                <div>
-                  <label>Filtro (tipo)</label>
-                  <select id="filtroTipoResumo">
-                    <option value="all">Todos</option>
-                    <option value="income">Entradas</option>
-                    <option value="expense">Saídas</option>
-                  </select>
-                </div>
-                <div>
-                  <label>Buscar</label>
-                  <input id="buscaResumo" placeholder="Ex: mercado, gasolina, aluguel..." />
-                </div>
-                <div style="min-width:220px">
-                  <label>Ação</label>
-                  <button class="btn primary wide" id="btnIrLancar">＋ Novo lançamento</button>
-                </div>
-              </div>
+            <div class="full">
+              <input id="m-cat-custom" placeholder="Ou escreva uma categoria (opcional)" />
+            </div>
 
-              <div style="height:10px"></div>
-              <div class="list" id="listaResumo"></div>
-              <div class="empty" id="vazioResumo" style="display:none">Sem lançamentos neste mês com esse filtro.</div>
+            <div class="full">
+              <input id="m-valor" inputmode="decimal" placeholder="Valor (ex: 125,90)" />
+            </div>
+
+            <div class="full">
+              <textarea id="m-nota" placeholder="Observação (opcional)"></textarea>
             </div>
           </div>
 
-          <div class="card">
-            <div class="hd">
-              <div>
-                <h2>Atalhos</h2>
-                <small>Backup / Metas / Lista</small>
-              </div>
-            </div>
-            <div class="bd">
-              <div class="row">
-                <button class="btn" id="btnIrMetas">💰 Metas</button>
-                <button class="btn" id="btnIrLista">🧾 Lista</button>
-              </div>
+          <div class="btnbar">
+            <button class="btn good" onclick="salvarMov()">Salvar</button>
+            <button class="btn ghost" onclick="limparMov()">Limpar</button>
+            <button class="btn bad" onclick="resetarTudo()">Resetar tudo</button>
+          </div>
 
-              <div style="height:10px"></div>
-
-              <div class="row">
-                <button class="btn" id="btnExportJSON">⬇ Exportar backup</button>
-                <button class="btn" id="btnImportJSON">⬆ Importar backup</button>
-              </div>
-
-              <div class="divider"></div>
-              <div class="muted" style="font-size:12.5px;line-height:1.5">
-                ✅ Tudo fica salvo no seu iPhone.<br>
-                ✅ Use “Exportar backup” antes de trocar de celular.
-              </div>
-            </div>
+          <div class="note">
+            ✅ Agora tem categoria de <b>Entrada</b> e <b>Saída</b>. Troque o “Tipo” e a lista muda.
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- LANÇAR -->
-      <section class="view" id="view-lancar">
-        <div class="card">
-          <div class="hd">
-            <div>
-              <h2 id="tituloLancar">Novo lançamento</h2>
-              <small>Entrada ou saída • R$</small>
+      <div class="card">
+        <div class="hd"><h2>HISTÓRICO</h2></div>
+        <div class="bd">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Valor</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tbl-hist"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA: METAS / CAIXINHAS -->
+    <section id="page-metas" class="grid hide">
+      <div class="card">
+        <div class="hd"><h2>METAS / CAIXINHAS</h2></div>
+        <div class="bd">
+          <div class="form">
+            <div class="full">
+              <select id="c-dest">
+                <option value="invest">Investimentos</option>
+                <option value="reserva">Reserva de emergência</option>
+                <option value="viagem">Viagem final do ano</option>
+                <option value="carro">Troca do carro</option>
+              </select>
             </div>
-            <div class="row" style="flex:0;gap:8px">
-              <button class="btn small" id="btnNovo">Novo</button>
-              <button class="btn small danger" id="btnCancelarEdicao" style="display:none">Cancelar</button>
+
+            <div class="full">
+              <input id="c-valor" inputmode="decimal" placeholder="Valor (ex: 200,00)" />
+            </div>
+
+            <div class="btnbar">
+              <button class="btn good" onclick="guardar()">Guardar (tira do saldo)</button>
+              <button class="btn ghost" onclick="resgatar()">Resgatar (volta pro saldo)</button>
+            </div>
+
+            <div class="full">
+              <div class="note" style="margin-top:2px">
+                Defina as metas (opcional). O app mostra o progresso.
+              </div>
+            </div>
+
+            <div class="full row2">
+              <input id="meta-invest" inputmode="decimal" placeholder="Meta Investimentos (ex: 10000,00)" />
+              <button class="btn" onclick="salvarMeta('invest')">Salvar</button>
+
+              <input id="meta-reserva" inputmode="decimal" placeholder="Meta Reserva (ex: 6000,00)" />
+              <button class="btn" onclick="salvarMeta('reserva')">Salvar</button>
+
+              <input id="meta-viagem" inputmode="decimal" placeholder="Meta Viagem (ex: 5000,00)" />
+              <button class="btn" onclick="salvarMeta('viagem')">Salvar</button>
+
+              <input id="meta-carro" inputmode="decimal" placeholder="Meta Carro (ex: 20000,00)" />
+              <button class="btn" onclick="salvarMeta('carro')">Salvar</button>
             </div>
           </div>
 
-          <div class="bd">
-            <div class="two">
-              <div>
-                <label>Tipo</label>
-                <select id="tipo">
-                  <option value="expense">Saída (gasto)</option>
-                  <option value="income">Entrada (recebido)</option>
-                </select>
-              </div>
-              <div>
-                <label>Valor (R$)</label>
-                <input id="valor" inputmode="decimal" placeholder="Ex: 120,50" />
-              </div>
+          <div class="kpi" style="margin-top:12px">
+            <div class="box">
+              <div class="lbl">Investimentos</div>
+              <div id="box-invest" class="val">R$ 0,00</div>
+              <div class="note" id="note-invest">Meta: R$ 0,00</div>
+              <div class="progress"><div id="bar-invest"></div></div>
             </div>
 
-            <div class="two">
-              <div>
-                <label>Categoria</label>
-                <select id="categoria"></select>
-              </div>
-              <div>
-                <label>Data</label>
-                <input id="data" type="date" />
-              </div>
+            <div class="box">
+              <div class="lbl">Reserva emergência</div>
+              <div id="box-reserva" class="val">R$ 0,00</div>
+              <div class="note" id="note-reserva">Meta: R$ 0,00</div>
+              <div class="progress"><div id="bar-reserva"></div></div>
             </div>
 
-            <div>
-              <label>Descrição</label>
-              <input id="descricao" placeholder="Ex: Mercado, Aluguel, Salário..." />
+            <div class="box">
+              <div class="lbl">Viagem final do ano</div>
+              <div id="box-viagem" class="val">R$ 0,00</div>
+              <div class="note" id="note-viagem">Meta: R$ 0,00</div>
+              <div class="progress"><div id="bar-viagem"></div></div>
             </div>
 
-            <div>
-              <label>Observação (opcional)</label>
-              <textarea id="obs" placeholder="Ex: pago no pix, parcelado, etc."></textarea>
+            <div class="box">
+              <div class="lbl">Troca do carro</div>
+              <div id="box-carro" class="val">R$ 0,00</div>
+              <div class="note" id="note-carro">Meta: R$ 0,00</div>
+              <div class="progress"><div id="bar-carro"></div></div>
             </div>
+          </div>
 
-            <div class="row">
-              <button class="btn primary" id="btnSalvar">Salvar</button>
-              <button class="btn danger" id="btnExcluir" style="display:none">Excluir</button>
-              <button class="btn" id="btnVoltarResumo">Voltar</button>
-            </div>
+          <div class="note">
+            💡 “Guardar” tira do <b>saldo</b> e coloca na caixinha. “Resgatar” faz o contrário.
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- METAS -->
-      <section class="view" id="view-metas">
-        <div class="card">
-          <div class="hd">
-            <div>
-              <h2>Metas</h2>
-              <small>Reserva • Investimentos • Viagem</small>
+    <!-- PÁGINA: CONFIG -->
+    <section id="page-config" class="grid hide">
+      <div class="card">
+        <div class="hd"><h2>CONFIGURAÇÕES</h2></div>
+        <div class="bd">
+          <div class="form">
+            <div class="full">
+              <input id="saldo-inicial" inputmode="decimal" placeholder="Definir saldo (ex: 600,00)" />
             </div>
-            <div class="row" style="flex:0;gap:8px">
-              <button class="btn small" id="btnResetMetas">Reiniciar</button>
+            <div class="btnbar">
+              <button class="btn good" onclick="definirSaldo()">Salvar</button>
+              <button class="btn ghost" onclick="exportar()">Exportar (JSON)</button>
+              <button class="btn ghost" onclick="importar()">Importar (colar JSON)</button>
             </div>
           </div>
-          <div class="bd" id="metasBox"></div>
-        </div>
-      </section>
 
-      <!-- LISTA -->
-      <section class="view" id="view-lista">
-        <div class="card">
-          <div class="hd">
-            <div>
-              <h2>Lista do mês</h2>
-              <small id="listaMes">—</small>
-            </div>
-            <div class="row" style="flex:0;gap:8px">
-              <button class="btn small" id="btnExportCSV">CSV</button>
-            </div>
-          </div>
-          <div class="bd">
-            <div class="two">
-              <div>
-                <label>Filtro (tipo)</label>
-                <select id="filtroTipo">
-                  <option value="all">Todos</option>
-                  <option value="income">Entradas</option>
-                  <option value="expense">Saídas</option>
-                </select>
-              </div>
-              <div>
-                <label>Filtro (categoria)</label>
-                <select id="filtroCat">
-                  <option value="all">Todas</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="two">
-              <div>
-                <label>Ordenar</label>
-                <select id="ordenar">
-                  <option value="date_desc">Data (mais novo)</option>
-                  <option value="date_asc">Data (mais antigo)</option>
-                  <option value="amount_desc">Valor (maior)</option>
-                  <option value="amount_asc">Valor (menor)</option>
-                </select>
-              </div>
-              <div>
-                <label>Buscar</label>
-                <input id="buscaLista" placeholder="Buscar por descrição / obs..." />
-              </div>
-            </div>
-
-            <div class="row">
-              <button class="btn" id="btnAplicar">Aplicar</button>
-              <button class="btn danger" id="btnLimpar">Limpar</button>
-              <button class="btn primary" id="btnIrLancar2">＋ Lançar</button>
-            </div>
-
-            <div class="divider"></div>
-            <div class="list" id="lista"></div>
-            <div class="empty" id="vazioLista" style="display:none">Sem lançamentos encontrados.</div>
+          <div class="note">
+            Sem senha. Tudo fica salvo no aparelho.
           </div>
         </div>
-      </section>
-
-      <!-- CONFIG -->
-      <section class="view" id="view-config">
-        <div class="card">
-          <div class="hd">
-            <div>
-              <h2>Config</h2>
-              <small>Categorias e limpeza</small>
-            </div>
-          </div>
-          <div class="bd">
-            <div class="two">
-              <div>
-                <label>Adicionar categoria</label>
-                <input id="novaCat" placeholder="Ex: Internet, Luz, Farmácia..." />
-              </div>
-              <div style="display:flex;align-items:flex-end">
-                <button class="btn primary wide" id="btnAddCat">Adicionar</button>
-              </div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div>
-              <label>Categorias atuais</label>
-              <div class="list" id="catsManage"></div>
-            </div>
-
-            <div class="divider"></div>
-
-            <div class="row">
-              <button class="btn" id="btnBackupCopiar">Copiar backup (JSON)</button>
-              <button class="btn danger" id="btnZerarTudo">Zerar tudo</button>
-            </div>
-
-            <div class="muted" style="font-size:12.5px;line-height:1.5;margin-top:10px">
-              “Zerar tudo” apaga lançamentos, categorias e metas do aparelho. Faça backup antes.
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+      </div>
+    </section>
   </div>
 
-  <!-- TABS -->
-  <nav class="tabs" aria-label="Navegação">
-    <div class="bar">
-      <button class="tab active" data-go="resumo"><span class="ico">🏠</span><span>Resumo</span></button>
-      <button class="tab" data-go="lancar"><span class="ico">➕</span><span>Lançar</span></button>
-      <button class="tab" data-go="metas"><span class="ico">💰</span><span>Metas</span></button>
-      <button class="tab" data-go="lista"><span class="ico">🧾</span><span>Lista</span></button>
-      <button class="tab" data-go="config"><span class="ico">⚙️</span><span>Config</span></button>
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="inner">
+      <div class="tab active" id="tab-hoje" onclick="abrir('page-hoje')"><div class="ico">🏠</div>Hoje</div>
+      <div class="tab" id="tab-mov" onclick="abrir('page-mov')"><div class="ico">🧾</div>Adicionar</div>
+      <div class="tab" id="tab-metas" onclick="abrir('page-metas')"><div class="ico">🎯</div>Metas</div>
+      <div class="tab" id="tab-config" onclick="abrir('page-config')"><div class="ico">⚙️</div>Config</div>
     </div>
-  </nav>
-
-  <div class="toast" id="toast">—</div>
+  </div>
 
   <script>
-    // ===== Utils =====
-    const BRL = new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL' });
-    const pad2 = (n)=> String(n).padStart(2,'0');
-
-    function toast(msg){
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(toast._tm);
-      toast._tm = setTimeout(()=>t.classList.remove('show'), 2100);
+    // Service worker (se existir no repo)
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
     }
 
+    const BRL = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
+    const $ = (id) => document.getElementById(id);
+
+    function parseBRL(v){
+      if(!v) return 0;
+      v = String(v).trim().replace(/\./g,"").replace(",",".").replace(/[^\d.\-]/g,"");
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    }
     function todayISO(){
       const d = new Date();
-      // corrige timezone
       const off = d.getTimezoneOffset();
       const local = new Date(d.getTime() - off*60000);
       return local.toISOString().slice(0,10);
     }
-
-    function ymKey(iso){ return iso.slice(0,7); }
-
-    function ymToLabel(ym){
-      const [y,m] = ym.split('-').map(Number);
-      const nomes = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-      return `${nomes[m-1]} de ${y}`;
-    }
-
-    function addMonths(ym, delta){
-      const [y,m] = ym.split('-').map(Number);
-      const d = new Date(y, m-1, 1);
-      d.setMonth(d.getMonth()+delta);
-      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`;
-    }
-
-    function parseBRL(str){
-      if(!str) return NaN;
-      let s = String(str).trim().replace(/\s/g,'');
-      s = s.replace(/\./g,'');
-      s = s.replace(',', '.');
-      const v = Number(s);
-      return Number.isFinite(v) ? v : NaN;
-    }
-
-    function uid(){
-      if(window.crypto && crypto.getRandomValues){
-        const a = new Uint32Array(2);
+    function cryptoRandom(){
+      try{
+        const a = new Uint32Array(4);
         crypto.getRandomValues(a);
-        return a[0].toString(16) + a[1].toString(16);
+        return [...a].map(x=>x.toString(16)).join("-");
+      }catch(e){
+        return String(Date.now()) + "-" + Math.random().toString(16).slice(2);
       }
-      return Math.random().toString(16).slice(2) + Date.now().toString(16);
     }
-
     function escapeHtml(s){
-      return String(s ?? '').replace(/[&<>"']/g, m => ({
-        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
-      }[m]));
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     }
 
-    function formatDateBR(iso){
-      if(!iso) return '—';
-      const [y,m,d] = iso.split('-');
-      return `${d}/${m}/${y}`;
-    }
-
-    // ===== Storage =====
-    const KEY_TX = 'cmtt_tx_v2';
-    const KEY_CATS = 'cmtt_cats_v2';
-    const KEY_GOALS = 'cmtt_goals_v2';
-
-    const DEFAULT_CATS = [
-      'Mercado','Casa','Aluguel','Luz','Água','Internet','Telefone','Combustível','Transporte','Saúde','Farmácia','Lazer','Educação','Assinaturas','Trabalho','Presentes','Igreja/Oferta','Dívidas','Outros'
+    // CATEGORIAS (ENTRADA e SAÍDA)
+    const CATS_ENTRADA = [
+      "Salário",
+      "Pix recebido",
+      "Venda",
+      "Freela/Serviço",
+      "Reembolso",
+      "Renda extra",
+      "Presente",
+      "Outros"
     ];
 
-    const DEFAULT_GOALS = [
-      { id:'reserva', nome:'Reserva de Emergência', emoji:'🛟', alvo: 5000, guardado: 0 },
-      { id:'invest',  nome:'Investimentos', emoji:'📈',          alvo: 10000, guardado: 0 },
-      { id:'viagem',  nome:'Viagem fim do ano', emoji:'✈️',      alvo: 3000, guardado: 0 }
+    const CATS_SAIDA = [
+      "Mercado",
+      "Restaurante/Lanche",
+      "Gasolina/Transporte",
+      "Conta de luz",
+      "Conta de água",
+      "Internet/Telefone",
+      "Aluguel",
+      "Cartão de crédito",
+      "Saúde",
+      "Farmácia",
+      "Lazer",
+      "Educação",
+      "Compras",
+      "Assinaturas",
+      "Outros"
     ];
 
-    function loadJSON(key, fallback){
-      try{
-        const raw = localStorage.getItem(key);
-        if(!raw) return fallback;
-        const v = JSON.parse(raw);
-        return v ?? fallback;
-      }catch(e){
-        return fallback;
-      }
-    }
-    function saveJSON(key, value){
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-
-    let tx = loadJSON(KEY_TX, []);
-    let cats = loadJSON(KEY_CATS, null);
-    if(!Array.isArray(cats) || !cats.length){ cats = [...DEFAULT_CATS]; saveJSON(KEY_CATS, cats); }
-
-    let goals = loadJSON(KEY_GOALS, null);
-    if(!Array.isArray(goals) || !goals.length){ goals = DEFAULT_GOALS.map(g=>({...g})); saveJSON(KEY_GOALS, goals); }
-
-    let currentYM = ymKey(todayISO());
-    let editId = null;
-
-    // ===== Network pill =====
-    const netDot = document.getElementById('netDot');
-    const netTxt = document.getElementById('netTxt');
-    function netUpdate(){
-      const on = navigator.onLine;
-      netDot.classList.toggle('off', !on);
-      netTxt.textContent = on ? 'online' : 'offline';
-    }
-    window.addEventListener('online', netUpdate);
-    window.addEventListener('offline', netUpdate);
-    netUpdate();
-
-    // ===== Tabs / Views =====
-    const views = {
-      resumo: document.getElementById('view-resumo'),
-      lancar: document.getElementById('view-lancar'),
-      metas: document.getElementById('view-metas'),
-      lista: document.getElementById('view-lista'),
-      config: document.getElementById('view-config'),
-    };
-
-    function setView(name){
-      Object.values(views).forEach(v => v.classList.remove('active'));
-      views[name].classList.add('active');
-
-      document.querySelectorAll('.tab').forEach(t=>{
-        t.classList.toggle('active', t.dataset.go === name);
-      });
-
-      // render
-      if(name==='resumo') renderResumo();
-      if(name==='lista') renderLista();
-      if(name==='metas') renderMetas();
-      if(name==='config') renderConfig();
-      if(name==='lancar') {} // nada extra
-      window.scrollTo({top:0, behavior:'smooth'});
-    }
-
-    document.querySelectorAll('.tab').forEach(t=>{
-      t.addEventListener('click', ()=> setView(t.dataset.go));
-    });
-
-    // ===== Categories fills =====
-    const selCategoria = document.getElementById('categoria');
-    const filtroCat = document.getElementById('filtroCat');
-
-    function fillCategories(){
-      selCategoria.innerHTML = '';
-      filtroCat.innerHTML = '<option value="all">Todas</option>';
-      cats.forEach(c=>{
-        const o = document.createElement('option');
-        o.value = c; o.textContent = c;
-        selCategoria.appendChild(o);
-
-        const o2 = document.createElement('option');
-        o2.value = c; o2.textContent = c;
-        filtroCat.appendChild(o2);
-      });
-    }
-    fillCategories();
-
-    // ===== Lançar form =====
-    const tituloLancar = document.getElementById('tituloLancar');
-    const btnCancelarEdicao = document.getElementById('btnCancelarEdicao');
-    const btnExcluir = document.getElementById('btnExcluir');
-
-    const tipo = document.getElementById('tipo');
-    const valor = document.getElementById('valor');
-    const data = document.getElementById('data');
-    const descricao = document.getElementById('descricao');
-    const obs = document.getElementById('obs');
-
-    data.value = todayISO();
-    selCategoria.value = cats[0] || 'Outros';
-
-    function resetForm(){
-      editId = null;
-      tituloLancar.textContent = 'Novo lançamento';
-      btnCancelarEdicao.style.display = 'none';
-      btnExcluir.style.display = 'none';
-      tipo.value = 'expense';
-      valor.value = '';
-      data.value = todayISO();
-      descricao.value = '';
-      obs.value = '';
-      selCategoria.value = cats[0] || 'Outros';
-    }
-
-    function loadToForm(id){
-      const it = tx.find(x=>x.id===id);
-      if(!it) return;
-      editId = id;
-      tituloLancar.textContent = 'Editar lançamento';
-      btnCancelarEdicao.style.display = 'inline-flex';
-      btnExcluir.style.display = 'inline-flex';
-      tipo.value = it.type;
-      valor.value = String(it.amount).replace('.', ',');
-      data.value = it.date;
-      selCategoria.value = it.category || (cats[0]||'Outros');
-      descricao.value = it.desc || '';
-      obs.value = it.note || '';
-      setView('lancar');
-      toast('Editando…');
-    }
-
-    document.getElementById('btnSalvar').addEventListener('click', ()=>{
-      const a = parseBRL(valor.value);
-      if(!Number.isFinite(a) || a<=0){ toast('Digite um valor válido'); valor.focus(); return; }
-      const d = data.value || todayISO();
-      const desc = (descricao.value||'').trim();
-      if(!desc){ toast('Coloque uma descrição'); descricao.focus(); return; }
-
-      const item = {
-        id: editId || uid(),
-        type: tipo.value,
-        amount: Number(a),
-        date: d,
-        category: selCategoria.value || 'Outros',
-        desc,
-        note: (obs.value||'').trim(),
-        createdAt: Date.now()
+    // STATE
+    const KEY = "controle_mateus_thais_v2";
+    function defaultState(){
+      return {
+        saldo: 0,
+        gastosMes: 0,
+        invest: 0,
+        reserva: 0,
+        viagem: 0,
+        carro: 0,
+        metas: { invest:0, reserva:0, viagem:0, carro:0 },
+        movs: [] // {id,tipo,data,cat,valor,nota}
       };
-
-      if(editId){
-        tx = tx.map(x=> x.id===editId ? item : x);
-        toast('Atualizado ✅');
-      }else{
-        tx.push(item);
-        toast('Salvo ✅');
-      }
-
-      saveJSON(KEY_TX, tx);
-      resetForm();
-      currentYM = ymKey(d);
-      setView('resumo');
-    });
-
-    document.getElementById('btnNovo').addEventListener('click', ()=>{ resetForm(); toast('Novo lançamento'); });
-    document.getElementById('btnVoltarResumo').addEventListener('click', ()=> setView('resumo'));
-    btnCancelarEdicao.addEventListener('click', ()=>{ resetForm(); setView('resumo'); });
-
-    btnExcluir.addEventListener('click', ()=>{
-      if(!editId) return;
-      if(!confirm('Excluir este lançamento?')) return;
-      tx = tx.filter(x=>x.id!==editId);
-      saveJSON(KEY_TX, tx);
-      toast('Excluído');
-      resetForm();
-      setView('lista');
-    });
-
-    // ===== Month nav =====
-    document.getElementById('prevMonth').addEventListener('click', ()=>{ currentYM = addMonths(currentYM, -1); renderResumo(); });
-    document.getElementById('nextMonth').addEventListener('click', ()=>{ currentYM = addMonths(currentYM, +1); renderResumo(); });
-
-    // ===== Resumo =====
-    const monthLabel = document.getElementById('monthLabel');
-    const kIncome = document.getElementById('kIncome');
-    const kExpense = document.getElementById('kExpense');
-    const kNet = document.getElementById('kNet');
-
-    const filtroTipoResumo = document.getElementById('filtroTipoResumo');
-    const buscaResumo = document.getElementById('buscaResumo');
-    const listaResumo = document.getElementById('listaResumo');
-    const vazioResumo = document.getElementById('vazioResumo');
-
-    function monthItems(ym){
-      return tx.filter(x=> ymKey(x.date) === ym);
     }
-
-    function calcTotals(items){
-      let inc=0, exp=0;
-      items.forEach(x=>{
-        if(x.type==='income') inc += x.amount;
-        else exp += x.amount;
-      });
-      return { inc, exp, net: inc-exp };
-    }
-
-    function renderResumo(){
-      monthLabel.textContent = ymToLabel(currentYM);
-
-      const base = monthItems(currentYM);
-      const t = calcTotals(base);
-
-      kIncome.textContent = BRL.format(t.inc);
-      kExpense.textContent = BRL.format(t.exp);
-      kNet.textContent = BRL.format(t.net);
-      kNet.classList.toggle('good', t.net>0);
-      kNet.classList.toggle('bad', t.net<0);
-
-      const tipoF = filtroTipoResumo.value;
-      const q = (buscaResumo.value||'').trim().toLowerCase();
-
-      let arr = [...base];
-      if(tipoF!=='all') arr = arr.filter(x=>x.type===tipoF);
-      if(q){
-        arr = arr.filter(x=>{
-          return (x.desc||'').toLowerCase().includes(q) ||
-                 (x.note||'').toLowerCase().includes(q) ||
-                 (x.category||'').toLowerCase().includes(q);
-        });
-      }
-
-      arr.sort((a,b)=> b.date.localeCompare(a.date) || ((b.createdAt||0)-(a.createdAt||0)));
-      listaResumo.innerHTML = '';
-      vazioResumo.style.display = arr.length ? 'none' : 'block';
-
-      arr.slice(0,8).forEach(x=>{
-        const sign = x.type==='income' ? '+' : '−';
-        const cls = x.type==='income' ? 'good' : 'bad';
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `
-          <div class="left">
-            <div class="title">${escapeHtml(x.desc)}</div>
-            <div class="meta">
-              <span class="tag">${x.type==='income' ? 'Entrada' : 'Saída'}</span>
-              <span class="tag">${escapeHtml(x.category||'Outros')}</span>
-              <span class="tag mono">${formatDateBR(x.date)}</span>
-              ${x.note ? `<span class="tag" title="${escapeHtml(x.note)}">📝 obs</span>` : ``}
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-            <div class="amount ${cls}">${sign} ${BRL.format(x.amount)}</div>
-            <button class="btn small" data-edit="${x.id}">Editar</button>
-          </div>
-        `;
-        listaResumo.appendChild(div);
-      });
-
-      listaResumo.querySelectorAll('[data-edit]').forEach(b=>{
-        b.onclick = ()=> loadToForm(b.getAttribute('data-edit'));
-      });
-
-      document.getElementById('listaMes').textContent = ymToLabel(currentYM);
-    }
-
-    filtroTipoResumo.addEventListener('change', renderResumo);
-    buscaResumo.addEventListener('input', ()=>{ renderResumo(); });
-
-    document.getElementById('btnIrLancar').addEventListener('click', ()=>{ resetForm(); setView('lancar'); });
-    document.getElementById('btnIrMetas').addEventListener('click', ()=> setView('metas'));
-    document.getElementById('btnIrLista').addEventListener('click', ()=> setView('lista'));
-    document.getElementById('btnIrLancar2').addEventListener('click', ()=>{ resetForm(); setView('lancar'); });
-
-    // ===== Lista (com filtros) =====
-    const filtroTipo = document.getElementById('filtroTipo');
-    const ordenar = document.getElementById('ordenar');
-    const buscaLista = document.getElementById('buscaLista');
-    const lista = document.getElementById('lista');
-    const vazioLista = document.getElementById('vazioLista');
-
-    document.getElementById('btnAplicar').addEventListener('click', ()=>{ toast('Filtros aplicados'); renderLista(); });
-    document.getElementById('btnLimpar').addEventListener('click', ()=>{
-      filtroTipo.value = 'all';
-      filtroCat.value = 'all';
-      ordenar.value = 'date_desc';
-      buscaLista.value = '';
-      toast('Limpo');
-      renderLista();
-    });
-
-    function renderLista(){
-      fillCategories();
-
-      const base = monthItems(currentYM);
-      let arr = [...base];
-
-      const tF = filtroTipo.value;
-      const cF = filtroCat.value;
-      const q = (buscaLista.value||'').trim().toLowerCase();
-
-      if(tF!=='all') arr = arr.filter(x=>x.type===tF);
-      if(cF!=='all') arr = arr.filter(x=> (x.category||'Outros')===cF);
-      if(q){
-        arr = arr.filter(x=>{
-          return (x.desc||'').toLowerCase().includes(q) ||
-                 (x.note||'').toLowerCase().includes(q) ||
-                 (x.category||'').toLowerCase().includes(q);
-        });
-      }
-
-      const s = ordenar.value;
-      arr.sort((a,b)=>{
-        if(s==='date_desc') return b.date.localeCompare(a.date) || ((b.createdAt||0)-(a.createdAt||0));
-        if(s==='date_asc') return a.date.localeCompare(b.date) || ((a.createdAt||0)-(b.createdAt||0));
-        if(s==='amount_desc') return (b.amount-a.amount) || b.date.localeCompare(a.date);
-        if(s==='amount_asc') return (a.amount-b.amount) || b.date.localeCompare(a.date);
-        return 0;
-      });
-
-      lista.innerHTML = '';
-      vazioLista.style.display = arr.length ? 'none' : 'block';
-
-      arr.forEach(x=>{
-        const sign = x.type==='income' ? '+' : '−';
-        const cls = x.type==='income' ? 'good' : 'bad';
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `
-          <div class="left">
-            <div class="title">${escapeHtml(x.desc)}</div>
-            <div class="meta">
-              <span class="tag">${x.type==='income' ? 'Entrada' : 'Saída'}</span>
-              <span class="tag">${escapeHtml(x.category||'Outros')}</span>
-              <span class="tag mono">${formatDateBR(x.date)}</span>
-              ${x.note ? `<span class="tag" title="${escapeHtml(x.note)}">📝 obs</span>` : ``}
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-            <div class="amount ${cls}">${sign} ${BRL.format(x.amount)}</div>
-            <button class="btn small" data-edit="${x.id}">Editar</button>
-          </div>
-        `;
-        lista.appendChild(div);
-      });
-
-      lista.querySelectorAll('[data-edit]').forEach(b=>{
-        b.onclick = ()=> loadToForm(b.getAttribute('data-edit'));
-      });
-    }
-
-    // ===== Metas =====
-    const metasBox = document.getElementById('metasBox');
-    document.getElementById('btnResetMetas').addEventListener('click', ()=>{
-      if(!confirm('Reiniciar metas? (zera valores e volta metas padrão)')) return;
-      goals = DEFAULT_GOALS.map(g=>({...g}));
-      saveJSON(KEY_GOALS, goals);
-      toast('Metas reiniciadas');
-      renderMetas();
-    });
-
-    function renderMetas(){
-      metasBox.innerHTML = '';
-      goals.forEach(g=>{
-        const pct = g.alvo>0 ? Math.min(100, Math.round((g.guardado/g.alvo)*100)) : 0;
-
-        const wrap = document.createElement('div');
-        wrap.className = 'card';
-        wrap.style.margin = '0 0 12px 0';
-
-        wrap.innerHTML = `
-          <div class="hd">
-            <div>
-              <h2>${g.emoji} ${escapeHtml(g.nome)}</h2>
-              <small>Meta: <b>${BRL.format(g.alvo)}</b> • Guardado: <b>${BRL.format(g.guardado)}</b> • <b>${pct}%</b></small>
-            </div>
-          </div>
-          <div class="bd">
-            <div class="progressWrap">
-              <div class="progressBar" style="width:${pct}%"></div>
-            </div>
-
-            <div style="height:12px"></div>
-
-            <div class="two">
-              <div>
-                <label>Alterar meta (R$)</label>
-                <input inputmode="decimal" placeholder="Ex: 3000" id="alvo_${g.id}">
-                <button class="btn primary wide" style="margin-top:10px" data-setalvo="${g.id}">Salvar meta</button>
-              </div>
-              <div>
-                <label>Valor (R$)</label>
-                <input inputmode="decimal" placeholder="Ex: 100" id="val_${g.id}">
-                <div class="two" style="margin-top:10px">
-                  <button class="btn" data-add="${g.id}">Adicionar</button>
-                  <button class="btn danger" data-sub="${g.id}">Retirar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-        metasBox.appendChild(wrap);
-      });
-
-      metasBox.querySelectorAll('[data-setalvo]').forEach(b=>{
-        b.onclick = ()=>{
-          const id = b.getAttribute('data-setalvo');
-          const input = document.getElementById('alvo_'+id);
-          const v = parseBRL(input.value);
-          if(!Number.isFinite(v) || v<=0){ alert('Coloque uma meta válida.'); return; }
-          const idx = goals.findIndex(x=>x.id===id);
-          goals[idx].alvo = Number(v.toFixed(2));
-          saveJSON(KEY_GOALS, goals);
-          input.value = '';
-          toast('Meta salva ✅');
-          renderMetas();
-        };
-      });
-
-      metasBox.querySelectorAll('[data-add]').forEach(b=>{
-        b.onclick = ()=>{
-          const id = b.getAttribute('data-add');
-          const input = document.getElementById('val_'+id);
-          const v = parseBRL(input.value);
-          if(!Number.isFinite(v) || v<=0){ alert('Digite um valor válido.'); return; }
-          const idx = goals.findIndex(x=>x.id===id);
-          goals[idx].guardado = Number((goals[idx].guardado + v).toFixed(2));
-          saveJSON(KEY_GOALS, goals);
-          input.value = '';
-          toast('Adicionado ✅');
-          renderMetas();
-        };
-      });
-
-      metasBox.querySelectorAll('[data-sub]').forEach(b=>{
-        b.onclick = ()=>{
-          const id = b.getAttribute('data-sub');
-          const input = document.getElementById('val_'+id);
-          const v = parseBRL(input.value);
-          if(!Number.isFinite(v) || v<=0){ alert('Digite um valor válido.'); return; }
-          const idx = goals.findIndex(x=>x.id===id);
-          const novo = goals[idx].guardado - v;
-          if(novo < 0){ alert('Não dá pra retirar mais do que você guardou.'); return; }
-          goals[idx].guardado = Number(novo.toFixed(2));
-          saveJSON(KEY_GOALS, goals);
-          input.value = '';
-          toast('Retirado ✅');
-          renderMetas();
-        };
-      });
-    }
-
-    // ===== Config (categorias) =====
-    const catsManage = document.getElementById('catsManage');
-    const novaCat = document.getElementById('novaCat');
-
-    document.getElementById('btnAddCat').addEventListener('click', ()=>{
-      const c = (novaCat.value||'').trim();
-      if(!c){ toast('Digite uma categoria'); return; }
-      if(cats.map(x=>x.toLowerCase()).includes(c.toLowerCase())){ toast('Já existe'); return; }
-      cats.push(c);
-      saveJSON(KEY_CATS, cats);
-      novaCat.value = '';
-      toast('Categoria adicionada ✅');
-      fillCategories();
-      renderConfig();
-    });
-
-    function renderConfig(){
-      catsManage.innerHTML = '';
-      cats.forEach((c, i)=>{
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.innerHTML = `
-          <div class="left">
-            <div class="title">${escapeHtml(c)}</div>
-            <div class="meta"><span class="tag">Categoria</span></div>
-          </div>
-          <div>
-            <button class="btn small danger" data-delcat="${i}">Remover</button>
-          </div>
-        `;
-        catsManage.appendChild(div);
-      });
-
-      catsManage.querySelectorAll('[data-delcat]').forEach(b=>{
-        b.onclick = ()=>{
-          const idx = Number(b.getAttribute('data-delcat'));
-          const name = cats[idx];
-          if(!confirm(`Remover categoria "${name}"?`)) return;
-          cats.splice(idx,1);
-          if(!cats.length) cats = [...DEFAULT_CATS];
-          saveJSON(KEY_CATS, cats);
-          fillCategories();
-          toast('Categoria removida');
-          renderConfig();
-        };
-      });
-    }
-
-    // ===== Backup / Import =====
-    document.getElementById('btnExportJSON').addEventListener('click', ()=>{
-      const payload = {
-        app:'Controle de Mateus e Thais',
-        version: 2,
-        exportedAt: new Date().toISOString(),
-        tx, cats, goals
-      };
-      downloadFile(`backup-controle-mt-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(payload, null, 2), 'application/json');
-      toast('Backup exportado');
-    });
-
-    document.getElementById('btnImportJSON').addEventListener('click', async ()=>{
-      const file = await pickFile('.json,application/json');
-      if(!file) return;
+    function load(){
       try{
-        const txt = await file.text();
-        const data = JSON.parse(txt);
-        if(!data || !Array.isArray(data.tx)){ alert('Arquivo inválido.'); return; }
-        if(!confirm('Importar backup? Isso substitui seus dados atuais.')) return;
+        const raw = localStorage.getItem(KEY);
+        if(!raw) return defaultState();
+        const st = Object.assign(defaultState(), JSON.parse(raw));
 
-        tx = data.tx;
-        cats = Array.isArray(data.cats) && data.cats.length ? data.cats : [...DEFAULT_CATS];
-        goals = Array.isArray(data.goals) && data.goals.length ? data.goals : DEFAULT_GOALS.map(g=>({...g}));
-
-        saveJSON(KEY_TX, tx);
-        saveJSON(KEY_CATS, cats);
-        saveJSON(KEY_GOALS, goals);
-
-        fillCategories();
-        toast('Importado ✅');
-        setView('resumo');
+        // migrações (se faltarem campos)
+        st.metas = Object.assign({invest:0,reserva:0,viagem:0,carro:0}, st.metas || {});
+        if(typeof st.carro !== "number") st.carro = 0;
+        return st;
       }catch(e){
-        alert('Não foi possível importar. JSON inválido.');
+        return defaultState();
       }
-    });
+    }
+    function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
 
-    function pickFile(accept){
-      return new Promise((resolve)=>{
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = accept;
-        input.onchange = ()=> resolve(input.files && input.files[0] ? input.files[0] : null);
-        input.click();
+    let state = load();
+
+    // UI Tabs
+    function abrir(pageId){
+      const pages = ["page-hoje","page-mov","page-metas","page-config"];
+      pages.forEach(p => $(p).classList.toggle("hide", p !== pageId));
+
+      const tabs = [
+        ["tab-hoje","page-hoje"],
+        ["tab-mov","page-mov"],
+        ["tab-metas","page-metas"],
+        ["tab-config","page-config"],
+      ];
+      tabs.forEach(([t,p]) => $(t).classList.toggle("active", p === pageId));
+      render();
+    }
+
+    // categorias dinâmicas
+    function atualizarCategorias(){
+      const tipo = $("m-tipo").value;
+      const sel = $("m-cat-select");
+      const list = (tipo === "receita") ? CATS_ENTRADA : CATS_SAIDA;
+
+      sel.innerHTML = list.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+    }
+
+    // Movimentações
+    function limparMov(){
+      $("m-tipo").value = "receita";
+      $("m-data").value = todayISO();
+      atualizarCategorias();
+      $("m-cat-custom").value = "";
+      $("m-valor").value = "";
+      $("m-nota").value = "";
+    }
+
+    function salvarMov(){
+      const tipo = $("m-tipo").value; // receita | gasto
+      const data = $("m-data").value || todayISO();
+
+      const catCustom = ($("m-cat-custom").value || "").trim();
+      const catSelect = $("m-cat-select").value;
+      const cat = catCustom ? catCustom : (catSelect || "(sem categoria)");
+
+      const valor = parseBRL($("m-valor").value);
+      const nota = ($("m-nota").value || "").trim();
+
+      if(valor <= 0){
+        alert("Coloque um valor maior que zero.");
+        return;
+      }
+
+      if(tipo === "receita"){
+        state.saldo += valor;
+      } else {
+        state.saldo -= valor;
+        state.gastosMes += valor;
+      }
+
+      state.movs.unshift({ id: cryptoRandom(), tipo, data, cat, valor, nota });
+      save();
+      limparMov();
+      abrir("page-hoje");
+    }
+
+    function removerMov(id){
+      const idx = state.movs.findIndex(m => m.id === id);
+      if(idx === -1) return;
+      const m = state.movs[idx];
+
+      // desfaz
+      if(m.tipo === "receita"){
+        state.saldo -= m.valor;
+      }else if(m.tipo === "gasto"){
+        state.saldo += m.valor;
+        state.gastosMes = Math.max(0, state.gastosMes - m.valor);
+      }
+
+      state.movs.splice(idx,1);
+      save();
+      render();
+    }
+
+    // Metas/Caixinhas
+    function nomeDest(d){
+      if(d==="invest") return "Investimentos";
+      if(d==="reserva") return "Reserva de emergência";
+      if(d==="viagem") return "Viagem final do ano";
+      return "Troca do carro";
+    }
+
+    function guardar(){
+      const dest = $("c-dest").value;
+      const v = parseBRL($("c-valor").value);
+      if(v<=0){ alert("Coloque um valor."); return; }
+      if(state.saldo < v){ alert("Saldo insuficiente."); return; }
+
+      state.saldo -= v;
+      state[dest] += v;
+
+      state.movs.unshift({
+        id: cryptoRandom(),
+        tipo: "transfer",
+        data: todayISO(),
+        cat: `Guardar → ${nomeDest(dest)}`,
+        valor: v,
+        nota: ""
+      });
+
+      $("c-valor").value = "";
+      save();
+      render();
+    }
+
+    function resgatar(){
+      const dest = $("c-dest").value;
+      const v = parseBRL($("c-valor").value);
+      if(v<=0){ alert("Coloque um valor."); return; }
+      if(state[dest] < v){ alert("Valor insuficiente nessa caixinha."); return; }
+
+      state[dest] -= v;
+      state.saldo += v;
+
+      state.movs.unshift({
+        id: cryptoRandom(),
+        tipo: "transfer",
+        data: todayISO(),
+        cat: `Resgatar ← ${nomeDest(dest)}`,
+        valor: v,
+        nota: ""
+      });
+
+      $("c-valor").value = "";
+      save();
+      render();
+    }
+
+    function salvarMeta(k){
+      const idMap = { invest:"meta-invest", reserva:"meta-reserva", viagem:"meta-viagem", carro:"meta-carro" };
+      const inp = $(idMap[k]);
+      const v = parseBRL(inp.value);
+      state.metas[k] = Math.max(0, v);
+      inp.value = "";
+      save();
+      render();
+    }
+
+    // Config
+    function definirSaldo(){
+      const v = parseBRL($("saldo-inicial").value);
+      state.saldo = Math.max(0, v);
+      $("saldo-inicial").value = "";
+      save();
+      render();
+      abrir("page-hoje");
+    }
+
+    function exportar(){
+      const txt = JSON.stringify(state, null, 2);
+      navigator.clipboard?.writeText(txt).then(()=>{
+        alert("Exportado e copiado (JSON).");
+      }).catch(()=>{
+        prompt("Copie o JSON:", txt);
       });
     }
 
-    function downloadFile(name, content, mime){
-      const blob = new Blob([content], {type:mime});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = name;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    // ===== CSV =====
-    document.getElementById('btnExportCSV').addEventListener('click', ()=>{
-      const rows = [['tipo','valor','data','categoria','descricao','observacao']];
-      tx
-        .filter(t=> ymKey(t.date)===currentYM)
-        .slice()
-        .sort((a,b)=>a.date.localeCompare(b.date))
-        .forEach(t=>{
-          rows.push([
-            t.type==='income' ? 'entrada' : 'saida',
-            String(t.amount).replace('.', ','),
-            formatDateBR(t.date),
-            t.category || '',
-            t.desc || '',
-            t.note || ''
-          ]);
-        });
-
-      const csv = rows.map(r=> r.map(cell=>{
-        const s = String(cell ?? '');
-        const needs = /[;"\n]/.test(s);
-        const esc = s.replace(/"/g,'""');
-        return needs ? `"${esc}"` : esc;
-      }).join(';')).join('\n');
-
-      downloadFile(`controle-mt-${currentYM}.csv`, csv, 'text/csv;charset=utf-8');
-      toast('CSV gerado');
-    });
-
-    // ===== Zerar tudo =====
-    document.getElementById('btnZerarTudo').addEventListener('click', ()=>{
-      if(!confirm('Zerar tudo? (apaga lançamentos, categorias e metas)')) return;
-      tx = [];
-      cats = [...DEFAULT_CATS];
-      goals = DEFAULT_GOALS.map(g=>({...g}));
-      saveJSON(KEY_TX, tx);
-      saveJSON(KEY_CATS, cats);
-      saveJSON(KEY_GOALS, goals);
-      fillCategories();
-      resetForm();
-      toast('Tudo zerado');
-      setView('resumo');
-    });
-
-    // copiar backup (JSON)
-    document.getElementById('btnBackupCopiar').addEventListener('click', async ()=>{
-      const payload = {
-        app:'Controle de Mateus e Thais',
-        version: 2,
-        exportedAt: new Date().toISOString(),
-        tx, cats, goals
-      };
-      const txt = JSON.stringify(payload, null, 2);
+    function importar(){
+      const txt = prompt("Cole aqui o JSON exportado:");
+      if(!txt) return;
       try{
-        await navigator.clipboard.writeText(txt);
-        toast('Backup copiado ✅');
+        const obj = JSON.parse(txt);
+        state = Object.assign(defaultState(), obj);
+        state.metas = Object.assign({invest:0,reserva:0,viagem:0,carro:0}, state.metas || {});
+        if(typeof state.carro !== "number") state.carro = 0;
+        save();
+        render();
+        alert("Importado com sucesso.");
       }catch(e){
-        prompt('Copie o backup JSON:', txt);
+        alert("JSON inválido.");
       }
-    });
-
-    // ===== Quick buttons =====
-    document.getElementById('btnIrLancar').addEventListener('click', ()=>{ resetForm(); setView('lancar'); });
-    document.getElementById('btnIrMetas').addEventListener('click', ()=> setView('metas'));
-    document.getElementById('btnIrLista').addEventListener('click', ()=> setView('lista'));
-    document.getElementById('btnIrLancar2').addEventListener('click', ()=>{ resetForm(); setView('lancar'); });
-
-    // ===== Initial =====
-    resetForm();
-    renderResumo();
-
-    // quando mudar pra lista/ metas via aba
-    function safeRenderOnOpen(){
-      // usado ao trocar views pelo tab
-      // (já renderiza dentro do setView)
     }
+
+    function resetarTudo(){
+      if(!confirm("Tem certeza? Isso apaga tudo.")) return;
+      state = defaultState();
+      save();
+      render();
+      abrir("page-hoje");
+    }
+
+    function badgeTipo(tipo){
+      if(tipo === "receita") return `<span class="tag good">Entrada</span>`;
+      if(tipo === "gasto") return `<span class="tag bad">Saída</span>`;
+      return `<span class="tag mid">Transfer</span>`;
+    }
+
+    function pct(atual, meta){
+      if(!meta || meta <= 0) return 0;
+      return Math.max(0, Math.min(100, (atual/meta)*100));
+    }
+
+    function render(){
+      // KPIs
+      $("kpi-saldo").textContent = BRL.format(state.saldo);
+      $("kpi-saldo").classList.toggle("bad", state.saldo < 0);
+      $("kpi-saldo").classList.toggle("good", state.saldo >= 0);
+
+      $("kpi-gastos").textContent = BRL.format(state.gastosMes);
+      $("kpi-invest").textContent = BRL.format(state.invest);
+      $("kpi-reserva").textContent = BRL.format(state.reserva);
+      $("kpi-viagem").textContent = BRL.format(state.viagem);
+      $("kpi-carro").textContent = BRL.format(state.carro);
+
+      // Boxes metas
+      $("box-invest").textContent = BRL.format(state.invest);
+      $("box-reserva").textContent = BRL.format(state.reserva);
+      $("box-viagem").textContent = BRL.format(state.viagem);
+      $("box-carro").textContent = BRL.format(state.carro);
+
+      $("note-invest").textContent = "Meta: " + BRL.format(state.metas.invest || 0);
+      $("note-reserva").textContent = "Meta: " + BRL.format(state.metas.reserva || 0);
+      $("note-viagem").textContent = "Meta: " + BRL.format(state.metas.viagem || 0);
+      $("note-carro").textContent = "Meta: " + BRL.format(state.metas.carro || 0);
+
+      $("bar-invest").style.width = pct(state.invest, state.metas.invest) + "%";
+      $("bar-reserva").style.width = pct(state.reserva, state.metas.reserva) + "%";
+      $("bar-viagem").style.width = pct(state.viagem, state.metas.viagem) + "%";
+      $("bar-carro").style.width = pct(state.carro, state.metas.carro) + "%";
+
+      // Últimos
+      const ult = state.movs.slice(0,6);
+      $("tbl-ultimos").innerHTML = ult.length
+        ? ult.map(m => `
+          <tr>
+            <td>${m.data}</td>
+            <td>${badgeTipo(m.tipo)}</td>
+            <td>${escapeHtml(m.cat)}</td>
+            <td>${BRL.format(m.valor)}</td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="4" style="color:rgba(234,240,255,.65)">Sem lançamentos ainda.</td></tr>`;
+
+      // Histórico
+      $("tbl-hist").innerHTML = state.movs.length
+        ? state.movs.map(m => `
+          <tr>
+            <td>${m.data}</td>
+            <td>${badgeTipo(m.tipo)}</td>
+            <td>${escapeHtml(m.cat)}${m.nota ? `<div class="note">${escapeHtml(m.nota)}</div>` : ""}</td>
+            <td>${BRL.format(m.valor)}</td>
+            <td><button class="btn bad" style="padding:8px 10px;border-radius:12px" onclick="removerMov('${m.id}')">X</button></td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="5" style="color:rgba(234,240,255,.65)">Sem lançamentos.</td></tr>`;
+    }
+
+    // Init
+    (function init(){
+      $("m-data").value = todayISO();
+      atualizarCategorias();
+      render();
+    })();
   </script>
 </body>
 </html>

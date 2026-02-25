@@ -2,856 +2,1227 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Controle de Mateus e Thais</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b1220" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Controle Financeiro (Casal)</title>
 
-  <!-- Ícone com cifrão (funciona no navegador; iPhone tela inicial às vezes pede PNG separado) -->
-  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="%2366a8ff"/>
-        <stop offset="1" stop-color="%2345e2a8"/>
-      </linearGradient>
-    </defs>
-    <rect width="256" height="256" rx="56" fill="%230b1220"/>
-    <rect x="18" y="18" width="220" height="220" rx="52" fill="url(%23g)" opacity="0.18"/>
-    <circle cx="128" cy="128" r="74" fill="url(%23g)" opacity="0.16"/>
-    <path d="M148 76c0-6-4-10-10-10h-6V56c0-5-4-8-8-8s-8 3-8 8v10h-7c-18 0-33 12-33 29 0 15 10 25 26 29l14 3c11 2 16 6 16 14 0 8-8 14-18 14h-23c-6 0-10 4-10 10s4 10 10 10h15v10c0 5 4 8 8 8s8-3 8-8v-10h8c20 0 35-12 35-30 0-16-11-26-28-30l-14-3c-10-2-14-6-14-12 0-8 7-13 17-13h21c6 0 10-4 10-10z"
-      fill="%23eaf0ff"/>
-  </svg>' />
-
-  <!-- Se você já tem manifest/sw no repo, mantém funcionando -->
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
   <style>
     :root{
-      --bg:#0b1220;
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.08);
-      --line: rgba(255,255,255,.10);
-      --text: #eaf0ff;
-      --muted:#a7b4d6;
-      --good:#45e2a8;
-      --bad:#ff6b6b;
-      --accent:#66a8ff;
-      --shadow: 0 18px 45px rgba(0,0,0,.45);
-      --radius: 22px;
-      --radius2: 18px;
+      --bg:#0b1220; --panel:rgba(255,255,255,.06); --line:rgba(255,255,255,.10);
+      --text:#eaf0ff; --muted:#a7b4d6; --good:#31d07c; --bad:#ff5d7a; --accent:#4c8dff;
+      --shadow:0 18px 60px rgba(0,0,0,.40); --r:18px; --tap:52px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
-
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
+      margin:0; font-family:var(--font); color:var(--text);
       background:
-        radial-gradient(1200px 700px at 30% -10%, rgba(102,168,255,.20), transparent 60%),
-        radial-gradient(900px 600px at 110% 10%, rgba(69,226,168,.16), transparent 55%),
-        linear-gradient(180deg, #09101f, var(--bg));
-      padding: 18px 14px 110px;
-      padding-bottom: calc(110px + env(safe-area-inset-bottom));
+        radial-gradient(900px 450px at 10% 0%, rgba(76,141,255,.20), transparent 60%),
+        radial-gradient(900px 450px at 90% 10%, rgba(49,208,124,.16), transparent 60%),
+        radial-gradient(900px 450px at 60% 100%, rgba(255,93,122,.14), transparent 60%),
+        var(--bg);
+      padding-bottom: 94px;
     }
+    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 0}
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:10px 4px 14px; position:sticky;top:0;z-index:20;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(11,18,32,.86), rgba(11,18,32,.15));
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(76,141,255,.95), rgba(49,208,124,.85));
+      box-shadow: var(--shadow);
+      display:grid;place-items:center;
+      font-weight:1000;color:#08111f;
+      flex:0 0 auto;
+      position:relative;overflow:hidden;
+    }
+    .logo:after{
+      content:"";position:absolute;inset:-60%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 42%);
+      transform: rotate(18deg);
+    }
+    h1{margin:0;font-size:16px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sub{margin-top:4px;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px;color:var(--muted);
+      user-select:none;white-space:nowrap;
+    }
+    .dot{width:10px;height:10px;border-radius:99px;background:var(--good);box-shadow:0 0 0 6px rgba(49,208,124,.10)}
+    .dot.off{background:#ffd166;box-shadow:0 0 0 6px rgba(255,209,102,.10)}
 
-    .wrap{max-width:900px;margin:0 auto}
-    .top{
-      display:flex;align-items:center;justify-content:space-between;gap:14px;
-      padding: 10px 6px 18px;
-    }
-    .title{
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: .2px;
-      margin: 0;
-    }
-    .sub{
-      margin:6px 0 0;
-      color:rgba(234,240,255,.65);
-      font-weight:700;
-      font-size:12px;
-    }
-
-    .grid{display:grid;grid-template-columns: 1fr;gap: 14px;}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:start}
+    @media (max-width:860px){.grid{grid-template-columns:1fr}}
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      background: var(--panel);
       border:1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: var(--r);
       box-shadow: var(--shadow);
       overflow:hidden;
     }
     .card .hd{
-      padding: 14px 16px 10px;
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
     }
-    .card .hd h2{
-      margin:0;
-      font-size: 14px;
-      letter-spacing: .12em;
-      color: rgba(234,240,255,.78);
-      font-weight: 900;
-    }
-    .card .bd{padding: 0 16px 16px;}
+    .card .hd h2{margin:0;font-size:14px;letter-spacing:.2px}
+    .card .hd small{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+    .card .bd{padding:14px}
 
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    @media (max-width:520px){.kpis{grid-template-columns:1fr}}
     .kpi{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 8px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:12px;
+      min-height:88px;
     }
-    .kpi .box{
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.18);
-      border-radius: 18px;
-      padding: 12px;
-      min-height: 76px;
-    }
-    .kpi .lbl{font-size:12px;color:var(--muted);font-weight:800}
-    .kpi .val{font-size:20px;font-weight:950;margin-top:6px}
-    .kpi .val.good{color:var(--good)}
-    .kpi .val.bad{color:var(--bad)}
+    .kpi .t{color:var(--muted);font-size:12px}
+    .kpi .v{margin-top:8px;font-size:18px;font-weight:1000}
+    .good{color:var(--good)} .bad{color:var(--bad)}
+    .mono{font-family:var(--mono)}
+    .divider{height:1px;background:rgba(255,255,255,.08);margin:12px 0}
 
-    .form{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .form .full{grid-column: 1 / -1}
-
-    input, select, textarea, button{font: inherit;color: var(--text);}
-    input, select, textarea{
+    label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+    input,select,textarea{
       width:100%;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      outline: none;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
     }
-    textarea{min-height: 84px; resize: vertical;}
+    textarea{min-height:86px;resize:vertical}
+    input::placeholder,textarea::placeholder{color: rgba(167,180,214,.65)}
+
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .row > *{flex:1;min-width:160px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:520px){.two{grid-template-columns:1fr}}
 
     .btn{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(102,168,255,.16);
-      font-weight: 950;
-      cursor: pointer;
-    }
-    .btn:active{transform: translateY(1px)}
-    .btn.ghost{background: rgba(0,0,0,.18)}
-    .btn.good{background: rgba(69,226,168,.18)}
-    .btn.bad{background: rgba(255,107,107,.18)}
-    .btnbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-
-    table{
-      width:100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-      overflow:hidden;
-      border-radius: 16px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.16);
-    }
-    th, td{
-      padding: 10px 10px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      font-size: 13px;
-      text-align:left;
-      vertical-align: top;
-    }
-    th{color:rgba(234,240,255,.75);font-weight:950}
-    tr:last-child td{border-bottom:none}
-
-    .tag{
-      display:inline-flex;align-items:center;gap:8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border:1px solid var(--line);
+      height: var(--tap);
+      padding:0 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
-      font-weight: 950;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .tag.good{color:var(--good)}
-    .tag.bad{color:var(--bad)}
-    .tag.mid{color:rgba(234,240,255,.85)}
-
-    .hide{display:none !important}
-
-    .note{
-      color: rgba(234,240,255,.72);
-      font-size: 12px;
-      margin-top: 10px;
-      line-height: 1.4;
-    }
-
-    /* Tabs */
-    .tabs{
-      position: fixed;
-      left: 0; right:0; bottom: 0;
-      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(5,9,18,.75);
-      backdrop-filter: blur(18px);
-      border-top: 1px solid rgba(255,255,255,.10);
-    }
-    .tabs .inner{
-      max-width: 900px;
-      margin: 0 auto;
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-    .tab{
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      gap: 6px;
-      padding: 10px 8px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      color: rgba(234,240,255,.85);
-      font-weight: 950;
-      font-size: 12px;
+      color:var(--text);
+      font-weight:900;
       cursor:pointer;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .tab.active{
-      background: rgba(102,168,255,.18);
-      border-color: rgba(102,168,255,.32);
-      color: #fff;
-    }
-    .tab .ico{font-size:18px;line-height:1}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{border-color: rgba(76,141,255,.35); background: rgba(76,141,255,.16)}
+    .btn.ok{border-color: rgba(49,208,124,.35); background: rgba(49,208,124,.16)}
+    .btn.danger{border-color: rgba(255,93,122,.30); background: rgba(255,93,122,.12)}
+    .btn.small{height:42px;border-radius:12px;font-size:13px;padding:0 12px;flex:0}
+    .btn.wide{width:100%}
 
-    .row2{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .list{display:flex;flex-direction:column;gap:10px}
+    .item{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:12px;
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;
     }
-    .progress{
-      margin-top:8px;
-      height:10px;
-      border-radius:999px;
+    .item .left{min-width:0}
+    .item .title{margin:0;font-size:14px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .item .meta{margin-top:6px;color:var(--muted);font-size:12px;display:flex;gap:10px;flex-wrap:wrap}
+    .tag{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:4px 8px;border-radius:999px;
       background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--muted);font-size:12px;white-space:nowrap;
+    }
+    .empty{
+      padding:14px;border-radius:16px;
+      background: rgba(0,0,0,.14);
+      border:1px dashed rgba(255,255,255,.16);
+      color:var(--muted);text-align:center;
+    }
+
+    .progressWrap{
+      height:12px;border-radius:999px;background:rgba(255,255,255,.10);
       border:1px solid rgba(255,255,255,.10);
       overflow:hidden;
     }
-    .progress > div{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(102,168,255,.65), rgba(69,226,168,.65));
+    .progressBar{
+      height:100%;width:0%;
+      background: linear-gradient(90deg, rgba(49,208,124,.85), rgba(76,141,255,.80));
     }
+    .small{font-size:12px;color:rgba(234,240,255,.75);line-height:1.45}
+
+    .view{display:none}
+    .view.active{display:block}
+
+    .tabs{
+      position:fixed;left:0;right:0;bottom:0;z-index:50;
+      background: rgba(10,16,30,.80);
+      backdrop-filter: blur(14px);
+      border-top:1px solid rgba(255,255,255,.10);
+      padding:10px 10px calc(12px + env(safe-area-inset-bottom));
+    }
+    .tabs .bar{
+      max-width:980px;margin:0 auto;
+      display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+    }
+    .tab{
+      height:56px;border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color:var(--muted);font-weight:1000;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+      cursor:pointer;user-select:none;font-size:11px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab.active{background: rgba(76,141,255,.14);border-color: rgba(76,141,255,.35);color: var(--text)}
+    .tab .ico{font-size:18px;line-height:1}
+
+    .toast{
+      position:fixed;left:50%;transform:translateX(-50%);
+      bottom: 96px;z-index:80;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      padding:10px 12px;border-radius:999px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      max-width: calc(100% - 24px);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      opacity:0;pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="top">
-      <div>
-        <h1 class="title">Controle de Mateus e Thais</h1>
-        <div class="sub">Brasil • sem senha • salvo no aparelho</div>
-      </div>
-    </div>
-
-    <!-- PÁGINA: HOJE -->
-    <section id="page-hoje" class="grid">
-      <div class="card">
-        <div class="hd"><h2>RESUMO</h2></div>
-        <div class="bd">
-          <div class="kpi">
-            <div class="box">
-              <div class="lbl">Saldo atual</div>
-              <div id="kpi-saldo" class="val good">R$ 0,00</div>
-            </div>
-            <div class="box">
-              <div class="lbl">Gastos (mês)</div>
-              <div id="kpi-gastos" class="val bad">R$ 0,00</div>
-            </div>
-            <div class="box">
-              <div class="lbl">Investimentos</div>
-              <div id="kpi-invest" class="val">R$ 0,00</div>
-            </div>
-            <div class="box">
-              <div class="lbl">Reserva emergência</div>
-              <div id="kpi-reserva" class="val">R$ 0,00</div>
-            </div>
-            <div class="box">
-              <div class="lbl">Viagem final do ano</div>
-              <div id="kpi-viagem" class="val">R$ 0,00</div>
-            </div>
-            <div class="box">
-              <div class="lbl">Troca do carro</div>
-              <div id="kpi-carro" class="val">R$ 0,00</div>
-            </div>
-          </div>
-
-          <div class="btnbar">
-            <button class="btn good" onclick="abrir('page-mov')">+ Adicionar</button>
-            <button class="btn ghost" onclick="abrir('page-metas')">Metas / Caixinhas</button>
-            <button class="btn ghost" onclick="abrir('page-config')">Config</button>
-          </div>
+    <header>
+      <div class="brand">
+        <div class="logo">$</div>
+        <div class="titlebox">
+          <h1 id="appTitle">Controle Financeiro (Casal)</h1>
+          <div class="sub">Entradas • Saídas • Caixinhas • Investimentos</div>
         </div>
       </div>
-
-      <div class="card">
-        <div class="hd"><h2>ÚLTIMOS LANÇAMENTOS</h2></div>
-        <div class="bd">
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Tipo</th>
-                <th>Categoria</th>
-                <th>Valor</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-ultimos">
-              <tr><td colspan="4" style="color:rgba(234,240,255,.65)">Sem lançamentos ainda.</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="pill" title="Conexão">
+        <span class="dot" id="netDot"></span>
+        <span id="netTxt">offline</span>
       </div>
-    </section>
+    </header>
 
-    <!-- PÁGINA: MOVIMENTAÇÕES -->
-    <section id="page-mov" class="grid hide">
-      <div class="card">
-        <div class="hd"><h2>ADICIONAR ENTRADA / SAÍDA</h2></div>
-        <div class="bd">
-          <div class="form">
+    <!-- RESUMO -->
+    <section class="view active" id="view-resumo">
+      <div class="grid">
+        <div class="card">
+          <div class="hd">
             <div>
-              <select id="m-tipo" onchange="atualizarCategorias()">
-                <option value="receita">Entrada (Receita)</option>
-                <option value="gasto">Saída (Gasto)</option>
-              </select>
+              <h2>Resumo do mês</h2>
+              <small id="monthLabel">—</small>
             </div>
-            <div>
-              <input id="m-data" type="date" />
-            </div>
-
-            <div class="full">
-              <select id="m-cat-select"></select>
-            </div>
-
-            <div class="full">
-              <input id="m-cat-custom" placeholder="Ou escreva uma categoria (opcional)" />
-            </div>
-
-            <div class="full">
-              <input id="m-valor" inputmode="decimal" placeholder="Valor (ex: 125,90)" />
-            </div>
-
-            <div class="full">
-              <textarea id="m-nota" placeholder="Observação (opcional)"></textarea>
+            <div class="row" style="flex:0;gap:8px">
+              <button class="btn small" id="prevMonth">◀</button>
+              <button class="btn small" id="nextMonth">▶</button>
             </div>
           </div>
-
-          <div class="btnbar">
-            <button class="btn good" onclick="salvarMov()">Salvar</button>
-            <button class="btn ghost" onclick="limparMov()">Limpar</button>
-            <button class="btn bad" onclick="resetarTudo()">Resetar tudo</button>
-          </div>
-
-          <div class="note">
-            ✅ Agora tem categoria de <b>Entrada</b> e <b>Saída</b>. Troque o “Tipo” e a lista muda.
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><h2>HISTÓRICO</h2></div>
-        <div class="bd">
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Tipo</th>
-                <th>Categoria</th>
-                <th>Valor</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="tbl-hist"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- PÁGINA: METAS / CAIXINHAS -->
-    <section id="page-metas" class="grid hide">
-      <div class="card">
-        <div class="hd"><h2>METAS / CAIXINHAS</h2></div>
-        <div class="bd">
-          <div class="form">
-            <div class="full">
-              <select id="c-dest">
-                <option value="invest">Investimentos</option>
-                <option value="reserva">Reserva de emergência</option>
-                <option value="viagem">Viagem final do ano</option>
-                <option value="carro">Troca do carro</option>
-              </select>
-            </div>
-
-            <div class="full">
-              <input id="c-valor" inputmode="decimal" placeholder="Valor (ex: 200,00)" />
-            </div>
-
-            <div class="btnbar">
-              <button class="btn good" onclick="guardar()">Guardar (tira do saldo)</button>
-              <button class="btn ghost" onclick="resgatar()">Resgatar (volta pro saldo)</button>
-            </div>
-
-            <div class="full">
-              <div class="note" style="margin-top:2px">
-                Defina as metas (opcional). O app mostra o progresso.
+          <div class="bd">
+            <div class="kpis">
+              <div class="kpi">
+                <div class="t">Entradas</div>
+                <div class="v good" id="kIncome">R$ 0,00</div>
+              </div>
+              <div class="kpi">
+                <div class="t">Saídas</div>
+                <div class="v bad" id="kExpense">R$ 0,00</div>
+              </div>
+              <div class="kpi">
+                <div class="t">Saldo (mês)</div>
+                <div class="v" id="kNet">R$ 0,00</div>
               </div>
             </div>
 
-            <div class="full row2">
-              <input id="meta-invest" inputmode="decimal" placeholder="Meta Investimentos (ex: 10000,00)" />
-              <button class="btn" onclick="salvarMeta('invest')">Salvar</button>
+            <div class="divider"></div>
 
-              <input id="meta-reserva" inputmode="decimal" placeholder="Meta Reserva (ex: 6000,00)" />
-              <button class="btn" onclick="salvarMeta('reserva')">Salvar</button>
+            <div class="row">
+              <div>
+                <label>Filtro (tipo)</label>
+                <select id="fTipo">
+                  <option value="all">Todos</option>
+                  <option value="income">Entradas</option>
+                  <option value="expense">Saídas</option>
+                  <option value="transfer">Transferências</option>
+                </select>
+              </div>
+              <div>
+                <label>Buscar</label>
+                <input id="fBusca" placeholder="Ex: mercado, aluguel, salário..." />
+              </div>
+              <div style="min-width:220px">
+                <label>Ação</label>
+                <button class="btn primary wide" id="btnNovoLanc">＋ Novo lançamento</button>
+              </div>
+            </div>
 
-              <input id="meta-viagem" inputmode="decimal" placeholder="Meta Viagem (ex: 5000,00)" />
-              <button class="btn" onclick="salvarMeta('viagem')">Salvar</button>
+            <div style="height:10px"></div>
+            <div class="list" id="resumoList"></div>
+            <div class="empty" id="resumoEmpty" style="display:none">Sem lançamentos neste mês com esse filtro.</div>
+          </div>
+        </div>
 
-              <input id="meta-carro" inputmode="decimal" placeholder="Meta Carro (ex: 20000,00)" />
-              <button class="btn" onclick="salvarMeta('carro')">Salvar</button>
+        <div class="card">
+          <div class="hd">
+            <div>
+              <h2>Caixinhas & Metas</h2>
+              <small>Guardar dinheiro e acompanhar progresso</small>
             </div>
           </div>
-
-          <div class="kpi" style="margin-top:12px">
-            <div class="box">
-              <div class="lbl">Investimentos</div>
-              <div id="box-invest" class="val">R$ 0,00</div>
-              <div class="note" id="note-invest">Meta: R$ 0,00</div>
-              <div class="progress"><div id="bar-invest"></div></div>
+          <div class="bd">
+            <div class="two">
+              <div>
+                <label>Caixinha</label>
+                <select id="boxDest"></select>
+              </div>
+              <div>
+                <label>Valor (R$)</label>
+                <input id="boxValue" inputmode="decimal" placeholder="Ex: 100" />
+              </div>
+            </div>
+            <div class="row">
+              <button class="btn ok" id="btnGuardar">Guardar</button>
+              <button class="btn" id="btnResgatar">Resgatar</button>
+              <button class="btn" id="btnIrCaixinhas">Abrir caixinhas</button>
             </div>
 
-            <div class="box">
-              <div class="lbl">Reserva emergência</div>
-              <div id="box-reserva" class="val">R$ 0,00</div>
-              <div class="note" id="note-reserva">Meta: R$ 0,00</div>
-              <div class="progress"><div id="bar-reserva"></div></div>
+            <div class="divider"></div>
+            <div id="boxesMini"></div>
+
+            <div class="divider"></div>
+            <div class="row">
+              <button class="btn" id="btnExportJSON">⬇ Backup</button>
+              <button class="btn" id="btnImportJSON">⬆ Importar</button>
+              <button class="btn" id="btnExportCSV">CSV</button>
             </div>
 
-            <div class="box">
-              <div class="lbl">Viagem final do ano</div>
-              <div id="box-viagem" class="val">R$ 0,00</div>
-              <div class="note" id="note-viagem">Meta: R$ 0,00</div>
-              <div class="progress"><div id="bar-viagem"></div></div>
+            <div class="small" style="margin-top:10px">
+              ✅ Tudo fica salvo no celular. Para trocar de aparelho: exporte backup.
             </div>
-
-            <div class="box">
-              <div class="lbl">Troca do carro</div>
-              <div id="box-carro" class="val">R$ 0,00</div>
-              <div class="note" id="note-carro">Meta: R$ 0,00</div>
-              <div class="progress"><div id="bar-carro"></div></div>
-            </div>
-          </div>
-
-          <div class="note">
-            💡 “Guardar” tira do <b>saldo</b> e coloca na caixinha. “Resgatar” faz o contrário.
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PÁGINA: CONFIG -->
-    <section id="page-config" class="grid hide">
+    <!-- LANÇAR -->
+    <section class="view" id="view-lancar">
       <div class="card">
-        <div class="hd"><h2>CONFIGURAÇÕES</h2></div>
+        <div class="hd">
+          <div>
+            <h2 id="formTitle">Novo lançamento</h2>
+            <small>Entrada / Saída / Transferência</small>
+          </div>
+          <div class="row" style="flex:0;gap:8px">
+            <button class="btn small" id="btnFormNovo">Novo</button>
+            <button class="btn small danger" id="btnCancelEdit" style="display:none">Cancelar</button>
+          </div>
+        </div>
+
         <div class="bd">
-          <div class="form">
-            <div class="full">
-              <input id="saldo-inicial" inputmode="decimal" placeholder="Definir saldo (ex: 600,00)" />
+          <div class="two">
+            <div>
+              <label>Tipo</label>
+              <select id="tipo">
+                <option value="expense">Saída (gasto)</option>
+                <option value="income">Entrada (recebido)</option>
+                <option value="transfer">Transferência (caixinha)</option>
+              </select>
             </div>
-            <div class="btnbar">
-              <button class="btn good" onclick="definirSaldo()">Salvar</button>
-              <button class="btn ghost" onclick="exportar()">Exportar (JSON)</button>
-              <button class="btn ghost" onclick="importar()">Importar (colar JSON)</button>
+            <div>
+              <label>Valor (R$)</label>
+              <input id="valor" inputmode="decimal" placeholder="Ex: 120,50" />
             </div>
           </div>
 
-          <div class="note">
-            Sem senha. Tudo fica salvo no aparelho.
+          <div class="two">
+            <div>
+              <label>Categoria</label>
+              <select id="categoria"></select>
+              <div class="small" style="margin-top:8px">Ou escreva:</div>
+              <input id="catLivre" placeholder="Ex: 13º, Feira, Bico..." />
+            </div>
+            <div>
+              <label>Data</label>
+              <input id="data" type="date" />
+              <div class="small" style="margin-top:8px">Observação curta</div>
+              <input id="obsCurta" placeholder="Pix / cartão / dinheiro..." />
+            </div>
           </div>
+
+          <div>
+            <label>Descrição</label>
+            <input id="desc" placeholder="Ex: Mercado, Aluguel, Salário..." />
+          </div>
+
+          <div>
+            <label>Observação completa (opcional)</label>
+            <textarea id="obs" placeholder="Detalhes..."></textarea>
+          </div>
+
+          <div class="row">
+            <button class="btn primary" id="btnSalvar">Salvar</button>
+            <button class="btn danger" id="btnExcluir" style="display:none">Excluir</button>
+            <button class="btn" id="btnVoltar">Voltar</button>
+          </div>
+
+          <div class="divider"></div>
+          <div class="small">
+            Transferência serve pra registrar guarda/resgate de caixinha (opcional).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAIXINHAS -->
+    <section class="view" id="view-caixinhas">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>Caixinhas</h2>
+            <small>Metas e progresso</small>
+          </div>
+          <div class="row" style="flex:0;gap:8px">
+            <button class="btn small" id="btnResetBoxes">Reiniciar</button>
+            <button class="btn small" id="btnBackBoxes">Voltar</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="two">
+            <div>
+              <label>Adicionar nova caixinha</label>
+              <input id="newBoxName" placeholder="Ex: Reforma, Escola..." />
+            </div>
+            <div>
+              <label>Meta (R$)</label>
+              <input id="newBoxGoal" inputmode="decimal" placeholder="Ex: 3000" />
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="btnAddBox">Adicionar</button>
+          </div>
+
+          <div class="divider"></div>
+          <div id="boxesList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTA -->
+    <section class="view" id="view-lista">
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2>Lista do mês</h2>
+            <small id="listaMes">—</small>
+          </div>
+          <div class="row" style="flex:0;gap:8px">
+            <button class="btn small" id="btnBackLista">Voltar</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="two">
+            <div>
+              <label>Tipo</label>
+              <select id="lTipo">
+                <option value="all">Todos</option>
+                <option value="income">Entradas</option>
+                <option value="expense">Saídas</option>
+                <option value="transfer">Transferências</option>
+              </select>
+            </div>
+            <div>
+              <label>Categoria</label>
+              <select id="lCat">
+                <option value="all">Todas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="two">
+            <div>
+              <label>Ordenar</label>
+              <select id="lOrd">
+                <option value="date_desc">Data (mais novo)</option>
+                <option value="date_asc">Data (mais antigo)</option>
+                <option value="amount_desc">Valor (maior)</option>
+                <option value="amount_asc">Valor (menor)</option>
+              </select>
+            </div>
+            <div>
+              <label>Buscar</label>
+              <input id="lBusca" placeholder="Buscar..." />
+            </div>
+          </div>
+
+          <div class="row">
+            <button class="btn" id="btnAplicarLista">Aplicar</button>
+            <button class="btn danger" id="btnLimparLista">Limpar</button>
+            <button class="btn primary" id="btnNovoLanc2">＋ Lançar</button>
+          </div>
+
+          <div class="divider"></div>
+          <div class="list" id="lista"></div>
+          <div class="empty" id="listaEmpty" style="display:none">Sem lançamentos encontrados.</div>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="inner">
-      <div class="tab active" id="tab-hoje" onclick="abrir('page-hoje')"><div class="ico">🏠</div>Hoje</div>
-      <div class="tab" id="tab-mov" onclick="abrir('page-mov')"><div class="ico">🧾</div>Adicionar</div>
-      <div class="tab" id="tab-metas" onclick="abrir('page-metas')"><div class="ico">🎯</div>Metas</div>
-      <div class="tab" id="tab-config" onclick="abrir('page-config')"><div class="ico">⚙️</div>Config</div>
+  <!-- TABS -->
+  <nav class="tabs" aria-label="Navegação">
+    <div class="bar">
+      <button class="tab active" data-go="resumo"><span class="ico">🏠</span><span>Resumo</span></button>
+      <button class="tab" data-go="lancar"><span class="ico">➕</span><span>Lançar</span></button>
+      <button class="tab" data-go="caixinhas"><span class="ico">🎯</span><span>Caixinhas</span></button>
+      <button class="tab" data-go="lista"><span class="ico">🧾</span><span>Lista</span></button>
     </div>
-  </div>
+  </nav>
+
+  <div class="toast" id="toast">—</div>
 
   <script>
-    // Service worker (se existir no repo)
+    // ===== Service Worker =====
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
     }
 
-    const BRL = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
-    const $ = (id) => document.getElementById(id);
+    // ===== Utils =====
+    const BRL = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+    const pad2 = (n)=> String(n).padStart(2,'0');
+    const $ = (id)=> document.getElementById(id);
 
-    function parseBRL(v){
-      if(!v) return 0;
-      v = String(v).trim().replace(/\./g,"").replace(",",".").replace(/[^\d.\-]/g,"");
-      const n = Number(v);
-      return Number.isFinite(n) ? n : 0;
+    function toast(msg){
+      const t=$("toast");
+      t.textContent=msg;
+      t.classList.add("show");
+      clearTimeout(toast._tm);
+      toast._tm=setTimeout(()=>t.classList.remove("show"),2200);
     }
+
     function todayISO(){
-      const d = new Date();
-      const off = d.getTimezoneOffset();
-      const local = new Date(d.getTime() - off*60000);
+      const d=new Date();
+      const off=d.getTimezoneOffset();
+      const local=new Date(d.getTime()-off*60000);
       return local.toISOString().slice(0,10);
     }
-    function cryptoRandom(){
+
+    function ymKey(iso){ return iso.slice(0,7); }
+    function ymToLabel(ym){
+      const [y,m]=ym.split('-').map(Number);
+      const nomes=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+      return `${nomes[m-1]} de ${y}`;
+    }
+    function addMonths(ym,delta){
+      const [y,m]=ym.split('-').map(Number);
+      const d=new Date(y,m-1,1);
+      d.setMonth(d.getMonth()+delta);
+      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`;
+    }
+
+    function parseBRL(str){
+      if(!str) return NaN;
+      let s=String(str).trim().replace(/\s/g,'');
+      s=s.replace(/\./g,'').replace(',','.');
+      s=s.replace(/[^\d.\-]/g,'');
+      const v=Number(s);
+      return Number.isFinite(v) ? v : NaN;
+    }
+
+    function uid(){
       try{
-        const a = new Uint32Array(4);
+        const a=new Uint32Array(2);
         crypto.getRandomValues(a);
-        return [...a].map(x=>x.toString(16)).join("-");
+        return a[0].toString(16)+a[1].toString(16);
       }catch(e){
-        return String(Date.now()) + "-" + Math.random().toString(16).slice(2);
+        return Math.random().toString(16).slice(2)+Date.now().toString(16);
       }
     }
+
     function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+      return String(s ?? '').replace(/[&<>"']/g, m => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+      }[m]));
     }
 
-    // CATEGORIAS (ENTRADA e SAÍDA)
-    const CATS_ENTRADA = [
-      "Salário",
-      "Pix recebido",
-      "Venda",
-      "Freela/Serviço",
-      "Reembolso",
-      "Renda extra",
-      "Presente",
-      "Outros"
+    function formatDateBR(iso){
+      if(!iso) return '—';
+      const [y,m,d]=iso.split('-');
+      return `${d}/${m}/${y}`;
+    }
+
+    // ===== Network pill =====
+    function netUpdate(){
+      const on=navigator.onLine;
+      $("netDot").classList.toggle("off", !on);
+      $("netTxt").textContent= on ? "online" : "offline";
+    }
+    window.addEventListener("online", netUpdate);
+    window.addEventListener("offline", netUpdate);
+    netUpdate();
+
+    // ===== Storage keys =====
+    const KEY_TX='cf_casal_tx_v1';
+    const KEY_CATS_IN='cf_casal_cats_in_v1';
+    const KEY_CATS_OUT='cf_casal_cats_out_v1';
+    const KEY_BOXES='cf_casal_boxes_v1';
+
+    const DEFAULT_CATS_IN=['Salário','Freelance','Vendas','Reembolso','Renda extra','Presente','Outros'];
+    const DEFAULT_CATS_OUT=['Mercado','Casa','Aluguel','Luz','Água','Internet','Telefone','Combustível','Transporte','Saúde','Farmácia','Lazer','Educação','Assinaturas','Igreja/Oferta','Dívidas','Outros'];
+
+    const DEFAULT_BOXES=[
+      {id:'reserva', name:'Reserva de emergência', emoji:'🛟', goal:5000, saved:0},
+      {id:'invest',  name:'Investimentos',        emoji:'📈', goal:10000, saved:0},
+      {id:'viagem',  name:'Viagem',               emoji:'✈️', goal:3000, saved:0},
+      {id:'carro',   name:'Troca do carro',       emoji:'🚗', goal:20000, saved:0},
     ];
 
-    const CATS_SAIDA = [
-      "Mercado",
-      "Restaurante/Lanche",
-      "Gasolina/Transporte",
-      "Conta de luz",
-      "Conta de água",
-      "Internet/Telefone",
-      "Aluguel",
-      "Cartão de crédito",
-      "Saúde",
-      "Farmácia",
-      "Lazer",
-      "Educação",
-      "Compras",
-      "Assinaturas",
-      "Outros"
-    ];
+    function loadJSON(key,fallback){
+      try{
+        const raw=localStorage.getItem(key);
+        if(!raw) return fallback;
+        const v=JSON.parse(raw);
+        return v ?? fallback;
+      }catch(e){ return fallback; }
+    }
+    function saveJSON(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
 
-    // STATE
-    const KEY = "controle_mateus_thais_v2";
-    function defaultState(){
-      return {
-        saldo: 0,
-        gastosMes: 0,
-        invest: 0,
-        reserva: 0,
-        viagem: 0,
-        carro: 0,
-        metas: { invest:0, reserva:0, viagem:0, carro:0 },
-        movs: [] // {id,tipo,data,cat,valor,nota}
+    let tx = loadJSON(KEY_TX, []);
+    let catsIn = loadJSON(KEY_CATS_IN, null);
+    if(!Array.isArray(catsIn) || !catsIn.length){ catsIn=[...DEFAULT_CATS_IN]; saveJSON(KEY_CATS_IN,catsIn); }
+    let catsOut = loadJSON(KEY_CATS_OUT, null);
+    if(!Array.isArray(catsOut) || !catsOut.length){ catsOut=[...DEFAULT_CATS_OUT]; saveJSON(KEY_CATS_OUT,catsOut); }
+    let boxes = loadJSON(KEY_BOXES, null);
+    if(!Array.isArray(boxes) || !boxes.length){ boxes=DEFAULT_BOXES.map(b=>({...b})); saveJSON(KEY_BOXES,boxes); }
+
+    let currentYM = ymKey(todayISO());
+    let editId = null;
+
+    // ===== Views / Tabs =====
+    const views={
+      resumo:$("view-resumo"),
+      lancar:$("view-lancar"),
+      caixinhas:$("view-caixinhas"),
+      lista:$("view-lista"),
+    };
+    function setView(name){
+      Object.values(views).forEach(v=>v.classList.remove("active"));
+      views[name].classList.add("active");
+      document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.go===name));
+      if(name==='resumo') renderResumo();
+      if(name==='caixinhas') renderBoxes();
+      if(name==='lista') renderLista();
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+    document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setView(t.dataset.go)));
+
+    // ===== Month nav =====
+    $("prevMonth").addEventListener("click", ()=>{ currentYM=addMonths(currentYM,-1); renderResumo(); });
+    $("nextMonth").addEventListener("click", ()=>{ currentYM=addMonths(currentYM,+1); renderResumo(); });
+
+    // ===== Categories by type =====
+    const selTipo=$("tipo"), selCat=$("categoria");
+    function fillCategories(){
+      const type=selTipo.value;
+      let list=[];
+      if(type==='income') list=catsIn;
+      else if(type==='expense') list=catsOut;
+      else list=['Transferência','Guardar/Resgatar','Outros'];
+      selCat.innerHTML='';
+      list.forEach(c=>{
+        const o=document.createElement("option");
+        o.value=c; o.textContent=c;
+        selCat.appendChild(o);
+      });
+    }
+    selTipo.addEventListener("change", ()=>{ fillCategories(); $("catLivre").value=''; });
+
+    // ===== Helpers for month list =====
+    function monthItems(ym){ return tx.filter(x=>ymKey(x.date)===ym); }
+    function calcTotals(items){
+      let inc=0, exp=0, tr=0;
+      items.forEach(x=>{
+        if(x.type==='income') inc+=x.amount;
+        else if(x.type==='expense') exp+=x.amount;
+        else tr+=x.amount;
+      });
+      return {inc,exp,tr,net:inc-exp};
+    }
+
+    // ===== Form =====
+    $("data").value=todayISO();
+
+    function resetForm(){
+      editId=null;
+      $("formTitle").textContent="Novo lançamento";
+      $("btnCancelEdit").style.display="none";
+      $("btnExcluir").style.display="none";
+      selTipo.value="expense";
+      fillCategories();
+      $("valor").value="";
+      $("data").value=todayISO();
+      $("desc").value="";
+      $("obsCurta").value="";
+      $("obs").value="";
+      $("catLivre").value="";
+    }
+
+    function loadToForm(id){
+      const it=tx.find(x=>x.id===id);
+      if(!it) return;
+      editId=id;
+      $("formTitle").textContent="Editar lançamento";
+      $("btnCancelEdit").style.display="inline-flex";
+      $("btnExcluir").style.display="inline-flex";
+
+      selTipo.value=it.type;
+      fillCategories();
+
+      $("valor").value=String(it.amount).replace('.',',');
+      $("data").value=it.date;
+
+      const cat=it.category||"";
+      if(cat && [...selCat.options].some(o=>o.value===cat)){
+        selCat.value=cat;
+        $("catLivre").value="";
+      }else{
+        $("catLivre").value=cat;
+      }
+
+      $("desc").value=it.desc||"";
+      $("obsCurta").value=it.quick||"";
+      $("obs").value=it.note||"";
+      setView("lancar");
+      toast("Editando…");
+    }
+
+    $("btnFormNovo").addEventListener("click", ()=>{ resetForm(); toast("Novo"); });
+    $("btnVoltar").addEventListener("click", ()=> setView("resumo"));
+    $("btnCancelEdit").addEventListener("click", ()=>{ resetForm(); setView("resumo"); });
+
+    $("btnSalvar").addEventListener("click", ()=>{
+      const a=parseBRL($("valor").value);
+      if(!Number.isFinite(a) || a<=0){ toast("Valor inválido"); $("valor").focus(); return; }
+      const d=$("data").value || todayISO();
+      const desc=($("desc").value||"").trim();
+      if(!desc){ toast("Coloque uma descrição"); $("desc").focus(); return; }
+
+      let cat=($("catLivre").value||"").trim() || (selCat.value||"");
+      if(!cat) cat="Outros";
+
+      const item={
+        id: editId || uid(),
+        type: selTipo.value,
+        amount: Number(a),
+        date: d,
+        category: cat,
+        desc,
+        quick: ($("obsCurta").value||"").trim(),
+        note: ($("obs").value||"").trim(),
+        createdAt: Date.now()
       };
+
+      if(editId) tx=tx.map(x=>x.id===editId?item:x);
+      else tx.push(item);
+
+      saveJSON(KEY_TX, tx);
+      currentYM=ymKey(d);
+      resetForm();
+      toast("Salvo ✅");
+      setView("resumo");
+    });
+
+    $("btnExcluir").addEventListener("click", ()=>{
+      if(!editId) return;
+      if(!confirm("Excluir este lançamento?")) return;
+      tx=tx.filter(x=>x.id!==editId);
+      saveJSON(KEY_TX, tx);
+      toast("Excluído");
+      resetForm();
+      setView("lista");
+    });
+
+    // ===== Resumo render =====
+    $("btnNovoLanc").addEventListener("click", ()=>{ resetForm(); setView("lancar"); });
+    $("btnNovoLanc2").addEventListener("click", ()=>{ resetForm(); setView("lancar"); });
+    $("btnIrCaixinhas").addEventListener("click", ()=> setView("caixinhas"));
+
+    $("fTipo").addEventListener("change", renderResumo);
+    $("fBusca").addEventListener("input", renderResumo);
+
+    function renderResumo(){
+      $("monthLabel").textContent=ymToLabel(currentYM);
+      $("listaMes").textContent=ymToLabel(currentYM);
+
+      const base=monthItems(currentYM);
+      const t=calcTotals(base);
+
+      $("kIncome").textContent=BRL.format(t.inc);
+      $("kExpense").textContent=BRL.format(t.exp);
+      $("kNet").textContent=BRL.format(t.net);
+      $("kNet").classList.toggle("good", t.net>0);
+      $("kNet").classList.toggle("bad", t.net<0);
+
+      renderBoxesMini();
+
+      const tipoF=$("fTipo").value;
+      const q=($("fBusca").value||"").trim().toLowerCase();
+
+      let arr=[...base];
+      if(tipoF!=="all") arr=arr.filter(x=>x.type===tipoF);
+      if(q){
+        arr=arr.filter(x=>
+          (x.desc||"").toLowerCase().includes(q) ||
+          (x.note||"").toLowerCase().includes(q) ||
+          (x.quick||"").toLowerCase().includes(q) ||
+          (x.category||"").toLowerCase().includes(q)
+        );
+      }
+      arr.sort((a,b)=> b.date.localeCompare(a.date) || ((b.createdAt||0)-(a.createdAt||0)));
+
+      const list=$("resumoList");
+      list.innerHTML="";
+      $("resumoEmpty").style.display = arr.length ? "none" : "block";
+
+      arr.slice(0,8).forEach(x=>{
+        const sign = x.type==="income" ? "+" : (x.type==="expense" ? "−" : "↔");
+        const cls  = x.type==="income" ? "good" : (x.type==="expense" ? "bad" : "");
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`
+          <div class="left">
+            <div class="title">${escapeHtml(x.desc)}</div>
+            <div class="meta">
+              <span class="tag">${x.type==="income"?"Entrada":(x.type==="expense"?"Saída":"Transfer")}</span>
+              <span class="tag">${escapeHtml(x.category||"")}</span>
+              <span class="tag mono">${formatDateBR(x.date)}</span>
+              ${x.quick?`<span class="tag" title="${escapeHtml(x.quick)}">💬 ${escapeHtml(x.quick)}</span>`:""}
+              ${x.note?`<span class="tag" title="${escapeHtml(x.note)}">📝 obs</span>`:""}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <div class="amount ${cls}">${sign} ${BRL.format(x.amount)}</div>
+            <button class="btn small" data-edit="${x.id}">Editar</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+
+      list.querySelectorAll("[data-edit]").forEach(b=>{
+        b.onclick=()=>loadToForm(b.getAttribute("data-edit"));
+      });
     }
-    function load(){
+
+    // ===== Boxes (caixinhas) =====
+    const boxDest=$("boxDest");
+    function fillBoxSelect(){
+      boxDest.innerHTML="";
+      boxes.forEach(b=>{
+        const o=document.createElement("option");
+        o.value=b.id;
+        o.textContent=`${b.emoji} ${b.name}`;
+        boxDest.appendChild(o);
+      });
+    }
+
+    function findBox(id){ return boxes.find(b=>b.id===id); }
+
+    function renderBoxesMini(){
+      fillBoxSelect();
+      const wrap=$("boxesMini");
+      wrap.innerHTML="";
+      boxes.forEach(b=>{
+        const pct=b.goal>0 ? Math.min(100, Math.round((b.saved/b.goal)*100)) : 0;
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`
+          <div class="left">
+            <div class="title">${b.emoji} ${escapeHtml(b.name)}</div>
+            <div class="meta">
+              <span class="tag">Guardado: <b>${BRL.format(b.saved)}</b></span>
+              <span class="tag">Meta: <b>${BRL.format(b.goal)}</b></span>
+              <span class="tag"><b>${pct}%</b></span>
+            </div>
+            <div class="progressWrap" style="margin-top:10px">
+              <div class="progressBar" style="width:${pct}%"></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <button class="btn small" data-openbox="${b.id}">Abrir</button>
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+      wrap.querySelectorAll("[data-openbox]").forEach(btn=>{
+        btn.onclick=()=>setView("caixinhas");
+      });
+    }
+
+    function adjustBox(id, amount){
+      const b=findBox(id);
+      if(!b) return false;
+      const next=Number((Number(b.saved||0)+amount).toFixed(2));
+      if(next<0) return false;
+      b.saved=next;
+      saveJSON(KEY_BOXES, boxes);
+      return true;
+    }
+
+    $("btnGuardar").addEventListener("click", ()=>{
+      const id=boxDest.value;
+      const v=parseBRL($("boxValue").value);
+      if(!Number.isFinite(v) || v<=0){ toast("Valor inválido"); return; }
+      adjustBox(id, v);
+      $("boxValue").value="";
+      toast("Guardado ✅");
+      renderResumo();
+    });
+
+    $("btnResgatar").addEventListener("click", ()=>{
+      const id=boxDest.value;
+      const v=parseBRL($("boxValue").value);
+      if(!Number.isFinite(v) || v<=0){ toast("Valor inválido"); return; }
+      const ok=adjustBox(id, -v);
+      if(!ok){ toast("Sem saldo nessa caixinha"); return; }
+      $("boxValue").value="";
+      toast("Resgatado ✅");
+      renderResumo();
+    });
+
+    // ===== Caixinhas screen =====
+    function renderBoxes(){
+      fillBoxSelect();
+
+      const list=$("boxesList");
+      list.innerHTML="";
+
+      boxes.forEach(b=>{
+        const pct=b.goal>0 ? Math.min(100, Math.round((b.saved/b.goal)*100)) : 0;
+
+        const card=document.createElement("div");
+        card.className="card";
+        card.style.margin="0 0 12px 0";
+        card.innerHTML=`
+          <div class="hd">
+            <div>
+              <h2>${b.emoji} ${escapeHtml(b.name)}</h2>
+              <small>Meta: <b>${BRL.format(b.goal)}</b> • Guardado: <b>${BRL.format(b.saved)}</b> • <b>${pct}%</b></small>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="progressWrap">
+              <div class="progressBar" style="width:${pct}%"></div>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="two">
+              <div>
+                <label>Alterar meta (R$)</label>
+                <input inputmode="decimal" placeholder="Ex: 3000" id="goal_${b.id}">
+                <button class="btn primary wide" style="margin-top:10px" data-setgoal="${b.id}">Salvar meta</button>
+              </div>
+              <div>
+                <label>Valor (R$)</label>
+                <input inputmode="decimal" placeholder="Ex: 100" id="val_${b.id}">
+                <div class="row">
+                  <button class="btn ok" data-add="${b.id}">Adicionar</button>
+                  <button class="btn" data-sub="${b.id}">Retirar</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row">
+              <button class="btn danger" data-delbox="${b.id}">Excluir caixinha</button>
+            </div>
+            <div class="small" style="margin-top:10px">⚠️ Excluir apaga essa caixinha (não afeta seus lançamentos).</div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+
+      list.querySelectorAll("[data-setgoal]").forEach(btn=>{
+        btn.onclick=()=>{
+          const id=btn.getAttribute("data-setgoal");
+          const v=parseBRL($("goal_"+id).value);
+          if(!Number.isFinite(v) || v<=0){ toast("Meta inválida"); return; }
+          const b=findBox(id);
+          b.goal=Number(v.toFixed(2));
+          saveJSON(KEY_BOXES, boxes);
+          $("goal_"+id).value="";
+          toast("Meta salva ✅");
+          renderBoxes();
+        };
+      });
+
+      list.querySelectorAll("[data-add]").forEach(btn=>{
+        btn.onclick=()=>{
+          const id=btn.getAttribute("data-add");
+          const v=parseBRL($("val_"+id).value);
+          if(!Number.isFinite(v) || v<=0){ toast("Valor inválido"); return; }
+          adjustBox(id, v);
+          $("val_"+id).value="";
+          toast("Adicionado ✅");
+          renderBoxes();
+        };
+      });
+
+      list.querySelectorAll("[data-sub]").forEach(btn=>{
+        btn.onclick=()=>{
+          const id=btn.getAttribute("data-sub");
+          const v=parseBRL($("val_"+id).value);
+          if(!Number.isFinite(v) || v<=0){ toast("Valor inválido"); return; }
+          const ok=adjustBox(id, -v);
+          if(!ok){ toast("Sem saldo nessa caixinha"); return; }
+          $("val_"+id).value="";
+          toast("Retirado ✅");
+          renderBoxes();
+        };
+      });
+
+      list.querySelectorAll("[data-delbox]").forEach(btn=>{
+        btn.onclick=()=>{
+          const id=btn.getAttribute("data-delbox");
+          const b=findBox(id);
+          if(!b) return;
+          if(!confirm(`Excluir a caixinha "${b.name}"?`)) return;
+          boxes=boxes.filter(x=>x.id!==id);
+          if(!boxes.length) boxes=DEFAULT_BOXES.map(x=>({...x}));
+          saveJSON(KEY_BOXES, boxes);
+          toast("Excluída");
+          renderBoxes();
+        };
+      });
+    }
+
+    $("btnBackBoxes").addEventListener("click", ()=> setView("resumo"));
+    $("btnResetBoxes").addEventListener("click", ()=>{
+      if(!confirm("Reiniciar caixinhas? (volta padrão e zera valores)")) return;
+      boxes=DEFAULT_BOXES.map(b=>({...b}));
+      saveJSON(KEY_BOXES, boxes);
+      toast("Reiniciado");
+      renderBoxes();
+    });
+
+    $("btnAddBox").addEventListener("click", ()=>{
+      const name=($("newBoxName").value||"").trim();
+      const goal=parseBRL($("newBoxGoal").value);
+      if(!name){ toast("Nome da caixinha"); return; }
+      if(!Number.isFinite(goal) || goal<=0){ toast("Meta inválida"); return; }
+      boxes.push({id:uid(), name, emoji:"💰", goal:Number(goal.toFixed(2)), saved:0});
+      saveJSON(KEY_BOXES, boxes);
+      $("newBoxName").value=""; $("newBoxGoal").value="";
+      toast("Caixinha criada ✅");
+      renderBoxes();
+    });
+
+    // ===== Lista screen =====
+    const lCat=$("lCat");
+    function fillListaCats(){
+      lCat.innerHTML='<option value="all">Todas</option>';
+      const uniq=new Set(monthItems(currentYM).map(x=>x.category||"").filter(Boolean));
+      [...uniq].sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(c=>{
+        const o=document.createElement("option");
+        o.value=c; o.textContent=c;
+        lCat.appendChild(o);
+      });
+    }
+
+    function renderLista(){
+      $("listaMes").textContent=ymToLabel(currentYM);
+      fillListaCats();
+
+      const base=monthItems(currentYM);
+      let arr=[...base];
+
+      const t=$("lTipo").value, c=$("lCat").value, q=($("lBusca").value||"").trim().toLowerCase();
+      if(t!=="all") arr=arr.filter(x=>x.type===t);
+      if(c!=="all") arr=arr.filter(x=>(x.category||"")===c);
+      if(q){
+        arr=arr.filter(x=>
+          (x.desc||"").toLowerCase().includes(q) ||
+          (x.note||"").toLowerCase().includes(q) ||
+          (x.quick||"").toLowerCase().includes(q) ||
+          (x.category||"").toLowerCase().includes(q)
+        );
+      }
+
+      const ord=$("lOrd").value;
+      arr.sort((a,b)=>{
+        if(ord==="date_desc") return b.date.localeCompare(a.date) || ((b.createdAt||0)-(a.createdAt||0));
+        if(ord==="date_asc") return a.date.localeCompare(b.date) || ((a.createdAt||0)-(b.createdAt||0));
+        if(ord==="amount_desc") return (b.amount-a.amount) || b.date.localeCompare(a.date);
+        if(ord==="amount_asc") return (a.amount-b.amount) || b.date.localeCompare(a.date);
+        return 0;
+      });
+
+      const list=$("lista");
+      list.innerHTML="";
+      $("listaEmpty").style.display = arr.length ? "none" : "block";
+
+      arr.forEach(x=>{
+        const sign=x.type==="income"?"+":(x.type==="expense"?"−":"↔");
+        const cls=x.type==="income"?"good":(x.type==="expense"?"bad":"");
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`
+          <div class="left">
+            <div class="title">${escapeHtml(x.desc)}</div>
+            <div class="meta">
+              <span class="tag">${x.type==="income"?"Entrada":(x.type==="expense"?"Saída":"Transfer")}</span>
+              <span class="tag">${escapeHtml(x.category||"")}</span>
+              <span class="tag mono">${formatDateBR(x.date)}</span>
+              ${x.quick?`<span class="tag" title="${escapeHtml(x.quick)}">💬 ${escapeHtml(x.quick)}</span>`:""}
+              ${x.note?`<span class="tag" title="${escapeHtml(x.note)}">📝 obs</span>`:""}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <div class="amount ${cls}">${sign} ${BRL.format(x.amount)}</div>
+            <button class="btn small" data-edit="${x.id}">Editar</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+
+      list.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>loadToForm(b.getAttribute("data-edit")));
+    }
+
+    $("btnBackLista").addEventListener("click", ()=> setView("resumo"));
+    $("btnAplicarLista").addEventListener("click", ()=>{ toast("Aplicado"); renderLista(); });
+    $("btnLimparLista").addEventListener("click", ()=>{
+      $("lTipo").value="all"; $("lCat").value="all"; $("lOrd").value="date_desc"; $("lBusca").value="";
+      toast("Limpo"); renderLista();
+    });
+    $("lTipo").addEventListener("change", renderLista);
+    $("lCat").addEventListener("change", renderLista);
+    $("lOrd").addEventListener("change", renderLista);
+    $("lBusca").addEventListener("input", renderLista);
+
+    // ===== Export / Import =====
+    function downloadFile(name, content, mime){
+      const blob=new Blob([content],{type:mime});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url; a.download=name;
+      document.body.appendChild(a);
+      a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function pickFile(accept){
+      return new Promise((resolve)=>{
+        const input=document.createElement("input");
+        input.type="file";
+        input.accept=accept;
+        input.onchange=()=>resolve(input.files && input.files[0] ? input.files[0] : null);
+        input.click();
+      });
+    }
+
+    $("btnExportJSON").addEventListener("click", ()=>{
+      const payload={
+        app:"Controle Financeiro (Casal)",
+        version:1,
+        exportedAt:new Date().toISOString(),
+        tx, catsIn, catsOut, boxes
+      };
+      downloadFile(`backup-controle-casal-${todayISO()}.json`, JSON.stringify(payload,null,2), "application/json");
+      toast("Backup exportado");
+    });
+
+    $("btnImportJSON").addEventListener("click", async ()=>{
+      const file=await pickFile(".json,application/json");
+      if(!file) return;
       try{
-        const raw = localStorage.getItem(KEY);
-        if(!raw) return defaultState();
-        const st = Object.assign(defaultState(), JSON.parse(raw));
+        const data=JSON.parse(await file.text());
+        if(!data || !Array.isArray(data.tx)) { alert("Backup inválido."); return; }
+        if(!confirm("Importar backup? Isso substitui seus dados atuais.")) return;
 
-        // migrações (se faltarem campos)
-        st.metas = Object.assign({invest:0,reserva:0,viagem:0,carro:0}, st.metas || {});
-        if(typeof st.carro !== "number") st.carro = 0;
-        return st;
-      }catch(e){
-        return defaultState();
-      }
-    }
-    function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+        tx = data.tx || [];
+        catsIn = Array.isArray(data.catsIn)&&data.catsIn.length ? data.catsIn : [...DEFAULT_CATS_IN];
+        catsOut = Array.isArray(data.catsOut)&&data.catsOut.length ? data.catsOut : [...DEFAULT_CATS_OUT];
+        boxes = Array.isArray(data.boxes)&&data.boxes.length ? data.boxes : DEFAULT_BOXES.map(b=>({...b}));
 
-    let state = load();
+        saveJSON(KEY_TX, tx);
+        saveJSON(KEY_CATS_IN, catsIn);
+        saveJSON(KEY_CATS_OUT, catsOut);
+        saveJSON(KEY_BOXES, boxes);
 
-    // UI Tabs
-    function abrir(pageId){
-      const pages = ["page-hoje","page-mov","page-metas","page-config"];
-      pages.forEach(p => $(p).classList.toggle("hide", p !== pageId));
-
-      const tabs = [
-        ["tab-hoje","page-hoje"],
-        ["tab-mov","page-mov"],
-        ["tab-metas","page-metas"],
-        ["tab-config","page-config"],
-      ];
-      tabs.forEach(([t,p]) => $(t).classList.toggle("active", p === pageId));
-      render();
-    }
-
-    // categorias dinâmicas
-    function atualizarCategorias(){
-      const tipo = $("m-tipo").value;
-      const sel = $("m-cat-select");
-      const list = (tipo === "receita") ? CATS_ENTRADA : CATS_SAIDA;
-
-      sel.innerHTML = list.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-    }
-
-    // Movimentações
-    function limparMov(){
-      $("m-tipo").value = "receita";
-      $("m-data").value = todayISO();
-      atualizarCategorias();
-      $("m-cat-custom").value = "";
-      $("m-valor").value = "";
-      $("m-nota").value = "";
-    }
-
-    function salvarMov(){
-      const tipo = $("m-tipo").value; // receita | gasto
-      const data = $("m-data").value || todayISO();
-
-      const catCustom = ($("m-cat-custom").value || "").trim();
-      const catSelect = $("m-cat-select").value;
-      const cat = catCustom ? catCustom : (catSelect || "(sem categoria)");
-
-      const valor = parseBRL($("m-valor").value);
-      const nota = ($("m-nota").value || "").trim();
-
-      if(valor <= 0){
-        alert("Coloque um valor maior que zero.");
-        return;
-      }
-
-      if(tipo === "receita"){
-        state.saldo += valor;
-      } else {
-        state.saldo -= valor;
-        state.gastosMes += valor;
-      }
-
-      state.movs.unshift({ id: cryptoRandom(), tipo, data, cat, valor, nota });
-      save();
-      limparMov();
-      abrir("page-hoje");
-    }
-
-    function removerMov(id){
-      const idx = state.movs.findIndex(m => m.id === id);
-      if(idx === -1) return;
-      const m = state.movs[idx];
-
-      // desfaz
-      if(m.tipo === "receita"){
-        state.saldo -= m.valor;
-      }else if(m.tipo === "gasto"){
-        state.saldo += m.valor;
-        state.gastosMes = Math.max(0, state.gastosMes - m.valor);
-      }
-
-      state.movs.splice(idx,1);
-      save();
-      render();
-    }
-
-    // Metas/Caixinhas
-    function nomeDest(d){
-      if(d==="invest") return "Investimentos";
-      if(d==="reserva") return "Reserva de emergência";
-      if(d==="viagem") return "Viagem final do ano";
-      return "Troca do carro";
-    }
-
-    function guardar(){
-      const dest = $("c-dest").value;
-      const v = parseBRL($("c-valor").value);
-      if(v<=0){ alert("Coloque um valor."); return; }
-      if(state.saldo < v){ alert("Saldo insuficiente."); return; }
-
-      state.saldo -= v;
-      state[dest] += v;
-
-      state.movs.unshift({
-        id: cryptoRandom(),
-        tipo: "transfer",
-        data: todayISO(),
-        cat: `Guardar → ${nomeDest(dest)}`,
-        valor: v,
-        nota: ""
-      });
-
-      $("c-valor").value = "";
-      save();
-      render();
-    }
-
-    function resgatar(){
-      const dest = $("c-dest").value;
-      const v = parseBRL($("c-valor").value);
-      if(v<=0){ alert("Coloque um valor."); return; }
-      if(state[dest] < v){ alert("Valor insuficiente nessa caixinha."); return; }
-
-      state[dest] -= v;
-      state.saldo += v;
-
-      state.movs.unshift({
-        id: cryptoRandom(),
-        tipo: "transfer",
-        data: todayISO(),
-        cat: `Resgatar ← ${nomeDest(dest)}`,
-        valor: v,
-        nota: ""
-      });
-
-      $("c-valor").value = "";
-      save();
-      render();
-    }
-
-    function salvarMeta(k){
-      const idMap = { invest:"meta-invest", reserva:"meta-reserva", viagem:"meta-viagem", carro:"meta-carro" };
-      const inp = $(idMap[k]);
-      const v = parseBRL(inp.value);
-      state.metas[k] = Math.max(0, v);
-      inp.value = "";
-      save();
-      render();
-    }
-
-    // Config
-    function definirSaldo(){
-      const v = parseBRL($("saldo-inicial").value);
-      state.saldo = Math.max(0, v);
-      $("saldo-inicial").value = "";
-      save();
-      render();
-      abrir("page-hoje");
-    }
-
-    function exportar(){
-      const txt = JSON.stringify(state, null, 2);
-      navigator.clipboard?.writeText(txt).then(()=>{
-        alert("Exportado e copiado (JSON).");
-      }).catch(()=>{
-        prompt("Copie o JSON:", txt);
-      });
-    }
-
-    function importar(){
-      const txt = prompt("Cole aqui o JSON exportado:");
-      if(!txt) return;
-      try{
-        const obj = JSON.parse(txt);
-        state = Object.assign(defaultState(), obj);
-        state.metas = Object.assign({invest:0,reserva:0,viagem:0,carro:0}, state.metas || {});
-        if(typeof state.carro !== "number") state.carro = 0;
-        save();
-        render();
-        alert("Importado com sucesso.");
+        fillCategories();
+        toast("Importado ✅");
+        setView("resumo");
       }catch(e){
         alert("JSON inválido.");
       }
-    }
+    });
 
-    function resetarTudo(){
-      if(!confirm("Tem certeza? Isso apaga tudo.")) return;
-      state = defaultState();
-      save();
-      render();
-      abrir("page-hoje");
-    }
+    $("btnExportCSV").addEventListener("click", ()=>{
+      const rows=[["tipo","valor","data","categoria","descricao","obs_curta","observacao"]];
+      tx.filter(t=>ymKey(t.date)===currentYM)
+        .slice()
+        .sort((a,b)=>a.date.localeCompare(b.date))
+        .forEach(t=>{
+          rows.push([
+            t.type==="income"?"entrada":(t.type==="expense"?"saida":"transfer"),
+            String(t.amount).replace(".",","),
+            formatDateBR(t.date),
+            t.category||"",
+            t.desc||"",
+            t.quick||"",
+            (t.note||"").replace(/\n/g," ")
+          ]);
+        });
 
-    function badgeTipo(tipo){
-      if(tipo === "receita") return `<span class="tag good">Entrada</span>`;
-      if(tipo === "gasto") return `<span class="tag bad">Saída</span>`;
-      return `<span class="tag mid">Transfer</span>`;
-    }
+      const csv=rows.map(r=>r.map(cell=>{
+        const s=String(cell??"");
+        const needs=/[;"\n]/.test(s);
+        const esc=s.replace(/"/g,'""');
+        return needs ? `"${esc}"` : esc;
+      }).join(";")).join("\n");
 
-    function pct(atual, meta){
-      if(!meta || meta <= 0) return 0;
-      return Math.max(0, Math.min(100, (atual/meta)*100));
-    }
+      downloadFile(`controle-casal-${currentYM}.csv`, csv, "text/csv;charset=utf-8");
+      toast("CSV gerado");
+    });
 
-    function render(){
-      // KPIs
-      $("kpi-saldo").textContent = BRL.format(state.saldo);
-      $("kpi-saldo").classList.toggle("bad", state.saldo < 0);
-      $("kpi-saldo").classList.toggle("good", state.saldo >= 0);
+    // ===== Buttons shortcuts =====
+    $("btnNovoLanc").addEventListener("click", ()=>{ resetForm(); setView("lancar"); });
+    $("btnNovoLanc2").addEventListener("click", ()=>{ resetForm(); setView("lancar"); });
 
-      $("kpi-gastos").textContent = BRL.format(state.gastosMes);
-      $("kpi-invest").textContent = BRL.format(state.invest);
-      $("kpi-reserva").textContent = BRL.format(state.reserva);
-      $("kpi-viagem").textContent = BRL.format(state.viagem);
-      $("kpi-carro").textContent = BRL.format(state.carro);
-
-      // Boxes metas
-      $("box-invest").textContent = BRL.format(state.invest);
-      $("box-reserva").textContent = BRL.format(state.reserva);
-      $("box-viagem").textContent = BRL.format(state.viagem);
-      $("box-carro").textContent = BRL.format(state.carro);
-
-      $("note-invest").textContent = "Meta: " + BRL.format(state.metas.invest || 0);
-      $("note-reserva").textContent = "Meta: " + BRL.format(state.metas.reserva || 0);
-      $("note-viagem").textContent = "Meta: " + BRL.format(state.metas.viagem || 0);
-      $("note-carro").textContent = "Meta: " + BRL.format(state.metas.carro || 0);
-
-      $("bar-invest").style.width = pct(state.invest, state.metas.invest) + "%";
-      $("bar-reserva").style.width = pct(state.reserva, state.metas.reserva) + "%";
-      $("bar-viagem").style.width = pct(state.viagem, state.metas.viagem) + "%";
-      $("bar-carro").style.width = pct(state.carro, state.metas.carro) + "%";
-
-      // Últimos
-      const ult = state.movs.slice(0,6);
-      $("tbl-ultimos").innerHTML = ult.length
-        ? ult.map(m => `
-          <tr>
-            <td>${m.data}</td>
-            <td>${badgeTipo(m.tipo)}</td>
-            <td>${escapeHtml(m.cat)}</td>
-            <td>${BRL.format(m.valor)}</td>
-          </tr>
-        `).join("")
-        : `<tr><td colspan="4" style="color:rgba(234,240,255,.65)">Sem lançamentos ainda.</td></tr>`;
-
-      // Histórico
-      $("tbl-hist").innerHTML = state.movs.length
-        ? state.movs.map(m => `
-          <tr>
-            <td>${m.data}</td>
-            <td>${badgeTipo(m.tipo)}</td>
-            <td>${escapeHtml(m.cat)}${m.nota ? `<div class="note">${escapeHtml(m.nota)}</div>` : ""}</td>
-            <td>${BRL.format(m.valor)}</td>
-            <td><button class="btn bad" style="padding:8px 10px;border-radius:12px" onclick="removerMov('${m.id}')">X</button></td>
-          </tr>
-        `).join("")
-        : `<tr><td colspan="5" style="color:rgba(234,240,255,.65)">Sem lançamentos.</td></tr>`;
-    }
-
-    // Init
-    (function init(){
-      $("m-data").value = todayISO();
-      atualizarCategorias();
-      render();
-    })();
+    // ===== Init =====
+    fillCategories();
+    fillBoxSelect();
+    resetForm();
+    renderResumo();
   </script>
 </body>
 </html>

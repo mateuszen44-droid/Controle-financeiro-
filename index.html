@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#0b1220" />
   <title>Financeiro Matheus e Thaís</title>
 
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css?v=2" />
 
-  <!-- Chart.js (gráficos reais) -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 </head>
 
@@ -32,7 +32,6 @@
 
     <main class="content">
 
-      <!-- HOME -->
       <section class="view active" id="view-home">
         <div class="card">
           <div class="cardRow">
@@ -103,7 +102,6 @@
         </div>
       </section>
 
-      <!-- ADD -->
       <section class="view" id="view-add">
         <div class="card formCard">
           <div class="cardRow">
@@ -148,7 +146,6 @@
         </div>
       </section>
 
-      <!-- CATEGORIES -->
       <section class="view" id="view-categories">
         <div class="card">
           <div class="cardRow">
@@ -170,7 +167,6 @@
         </div>
       </section>
 
-      <!-- INVESTMENTS -->
       <section class="view" id="view-invest">
         <div class="card">
           <div class="cardRow">
@@ -201,17 +197,11 @@
         </div>
       </section>
 
-      <!-- GOALS / BOXES -->
       <section class="view" id="view-goals">
         <div class="card">
           <div class="cardRow">
             <div class="cardTitle">Metas & Caixinhas</div>
             <button class="pillBtn" id="btnAddGoal">＋ Criar</button>
-          </div>
-
-          <div class="hint">
-            Metas: Viagem fim do ano, Troca do carro.<br/>
-            Caixinhas: Reserva de Emergência (guardar dinheiro).
           </div>
 
           <div class="segmented">
@@ -224,17 +214,11 @@
         </div>
       </section>
 
-      <!-- MORE -->
       <section class="view" id="view-more">
         <div class="card">
           <div class="cardRow">
             <div class="cardTitle">Backup & Segurança</div>
             <div class="tinyDots">⋯</div>
-          </div>
-
-          <div class="hint">
-            Seus dados ficam <b>no seu aparelho</b> (LocalStorage).<br/>
-            Para trocar de celular, use <b>Exportar</b> e depois <b>Importar</b>.
           </div>
 
           <div class="formActions">
@@ -251,7 +235,6 @@
       </section>
     </main>
 
-    <!-- Bottom Nav -->
     <nav class="bottomNav">
       <div class="navShell">
         <button class="navBtn active" data-go="home">🏠 <span>Início</span></button>
@@ -263,10 +246,12 @@
     </nav>
   </div>
 
-  <script src="app.js"></script>
+  <script src="./app.js?v=2"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(()=>{});
+      });
     }
   </script>
 </body>

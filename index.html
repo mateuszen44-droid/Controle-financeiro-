@@ -6,10 +6,9 @@
   <meta name="theme-color" content="#0b1220" />
   <title>Financeiro Matheus e Thaís</title>
 
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=2" />
+  <link rel="manifest" href="./manifest.webmanifest?v=7" />
+  <link rel="stylesheet" href="./styles.css?v=7" />
 
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 </head>
 
@@ -31,12 +30,12 @@
     </header>
 
     <main class="content">
-
+      <!-- HOME -->
       <section class="view active" id="view-home">
-        <div class="card">
+        <div class="card heroCard">
           <div class="cardRow">
             <div class="muted">Total Balance</div>
-            <div class="tinyDots" id="monthBadge">—</div>
+            <div class="chip" id="monthBadge">—</div>
           </div>
 
           <div class="balanceValue" id="balanceValue">R$ 0,00</div>
@@ -102,10 +101,11 @@
         </div>
       </section>
 
+      <!-- ADD -->
       <section class="view" id="view-add">
         <div class="card formCard">
           <div class="cardRow">
-            <div class="cardTitle">Adicionar transação</div>
+            <div class="cardTitle">Adicionar</div>
             <div class="badge" id="badgeType">Saída</div>
           </div>
 
@@ -113,6 +113,7 @@
             <button class="typeBtn" data-type="income">Entrada</button>
             <button class="typeBtn active" data-type="expense">Saída</button>
             <button class="typeBtn" data-type="investment">Invest.</button>
+            <button class="typeBtn" data-type="box">Caixinha</button>
           </div>
 
           <div class="formGrid">
@@ -132,7 +133,7 @@
             </label>
 
             <label class="field" style="grid-column: 1 / -1;">
-              <span>Descrição (opcional)</span>
+              <span>Descrição</span>
               <input id="txNote" placeholder="Ex: Mercado, Uber, PIX..." />
             </label>
           </div>
@@ -142,36 +143,35 @@
             <button class="btnSecondary" id="btnCancelTx">Cancelar</button>
           </div>
 
-          <div class="hint">Dica: clique em uma transação para editar/apagar.</div>
+          <div class="hint">Toque numa transação em “Gastos recentes” para editar/apagar.</div>
         </div>
       </section>
 
+      <!-- CATEGORIES -->
       <section class="view" id="view-categories">
         <div class="card">
           <div class="cardRow">
-            <div class="cardTitle">Categorias & Orçamentos</div>
+            <div class="cardTitle">Categorias</div>
             <button class="pillBtn" id="btnAddCategory">＋ Nova</button>
-          </div>
-
-          <div class="hint">
-            Para categorias de <b>Saída</b>, você pode colocar <b>orçamento mensal</b> e ver a barra de consumo.
           </div>
 
           <div class="segmented">
             <button class="segBtn active" data-catfilter="expense">Saídas</button>
             <button class="segBtn" data-catfilter="income">Entradas</button>
             <button class="segBtn" data-catfilter="investment">Invest.</button>
+            <button class="segBtn" data-catfilter="box">Caixinhas</button>
           </div>
 
           <div class="list" id="catList"></div>
         </div>
       </section>
 
+      <!-- INVEST -->
       <section class="view" id="view-invest">
         <div class="card">
           <div class="cardRow">
             <div class="cardTitle">Investimentos</div>
-            <button class="pillBtn" id="btnAddInvest">＋ Investir</button>
+            <button class="pillBtn" id="btnAddInvest">＋ Aportar</button>
           </div>
 
           <div class="investTop">
@@ -180,13 +180,13 @@
               <div class="investValue" id="investTotal">R$ 0,00</div>
             </div>
             <div class="investBox">
-              <div class="miniLabel">Aporte no mês</div>
+              <div class="miniLabel">Aportes no mês</div>
               <div class="investValue" id="investMonth">R$ 0,00</div>
             </div>
           </div>
 
           <div class="chartCard" style="margin-top:12px;">
-            <div class="chartTitle">Aportes por categoria</div>
+            <div class="chartTitle">Aportes por tipo</div>
             <canvas id="chartInvest"></canvas>
           </div>
 
@@ -197,6 +197,7 @@
         </div>
       </section>
 
+      <!-- GOALS -->
       <section class="view" id="view-goals">
         <div class="card">
           <div class="cardRow">
@@ -214,11 +215,12 @@
         </div>
       </section>
 
+      <!-- MORE -->
       <section class="view" id="view-more">
         <div class="card">
           <div class="cardRow">
-            <div class="cardTitle">Backup & Segurança</div>
-            <div class="tinyDots">⋯</div>
+            <div class="cardTitle">Backup</div>
+            <div class="chip">Privado • Só no seu iPhone</div>
           </div>
 
           <div class="formActions">
@@ -231,6 +233,8 @@
           <div class="formActions" style="margin-top:12px;">
             <button class="btnDanger" id="btnReset">Zerar tudo</button>
           </div>
+
+          <div class="hint">Dica: antes de atualizar os códigos, exporta o backup.</div>
         </div>
       </section>
     </main>
@@ -246,11 +250,11 @@
     </nav>
   </div>
 
-  <script src="./app.js?v=2"></script>
+  <script src="./app.js?v=7"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(()=>{});
+        navigator.serviceWorker.register("./sw.js?v=7").catch(()=>{});
       });
     }
   </script>

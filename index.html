@@ -1,216 +1,279 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1220" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Financeiro" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Financeiro Matheus e Thaís</title>
 
   <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#0B1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <title>Financeiro Matheus e Thaís</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="topbar__title">
-      <div class="pill">💰</div>
-      <div>
-        <div class="title">Financeiro</div>
-        <div class="subtitle">Matheus e Thaís</div>
-      </div>
-    </div>
-    <button class="iconBtn" id="btnBackup" title="Backup / Importar">☁️</button>
-  </header>
+  <div class="app">
 
-  <main class="container">
-    <!-- DASHBOARD -->
-    <section class="view active" id="view-dashboard">
-      <div class="hero">
-        <div class="hero__left">
-          <div class="kpi">
-            <div class="kpi__label">Saldo</div>
-            <div class="kpi__value" id="kpiSaldo">R$ 0,00</div>
-          </div>
-          <div class="row">
-            <div class="card mini">
-              <div class="muted">Entradas</div>
-              <div class="pos" id="kpiEntradas">R$ 0,00</div>
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topLeft">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+            <path d="M4 19V5" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 19H20" stroke="rgba(255,255,255,.25)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M7 16l4-6 4 3 5-7" stroke="rgba(124,244,207,1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="11" cy="10" r="1.6" fill="rgba(124,244,207,1)"/>
+            <circle cx="15" cy="13" r="1.6" fill="rgba(255,168,92,1)"/>
+          </svg>
+        </div>
+        <div class="topTitle">Financeiro Matheus e Thaís</div>
+      </div>
+
+      <button class="notifBtn" id="btnNotif" aria-label="Notificações" title="Notificações">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+          <path d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Z" fill="rgba(255,255,255,.85)"/>
+          <path d="M18 16H6c1.2-1.2 1.7-2.7 1.7-5.2 0-3.3 1.9-5.7 4.3-6.2V4a.9.9 0 1 1 1.8 0v.6c2.4.5 4.3 2.9 4.3 6.2 0 2.5.5 4 1.7 5.2Z"
+                stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <span class="badgeDot" id="notifDot" hidden></span>
+      </button>
+    </header>
+
+    <!-- SCREENS -->
+    <main class="content">
+
+      <!-- INÍCIO -->
+      <section class="screen active" id="screen-home">
+        <div class="card balanceCard">
+          <div class="balanceTop">
+            <div class="muted">Total Balance</div>
+            <div class="miniIcon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+                <path d="M5 12h4v7H5v-7Zm5-7h4v14h-4V5Zm5 4h4v10h-4V9Z" fill="rgba(255,255,255,.35)"/>
+              </svg>
             </div>
-            <div class="card mini">
-              <div class="muted">Saídas</div>
-              <div class="neg" id="kpiSaidas">R$ 0,00</div>
-            </div>
+          </div>
+
+          <div class="balanceValue" id="uiTotal">R$ 0,00</div>
+
+          <div class="ctaRow">
+            <button class="ctaPill pillIn" id="btnQuickIn">
+              <span class="pillIcon">+</span>
+              <span class="pillText">
+                <span class="pillLabel">Entradas</span>
+                <span class="pillValue" id="uiIn">R$ 0,00</span>
+              </span>
+              <span class="pillArrow">›</span>
+            </button>
+
+            <button class="ctaPill pillOut" id="btnQuickOut">
+              <span class="pillIcon">−</span>
+              <span class="pillText">
+                <span class="pillLabel">Saídas</span>
+                <span class="pillValue" id="uiOut">R$ 0,00</span>
+              </span>
+              <span class="pillArrow">›</span>
+            </button>
           </div>
         </div>
 
-        <div class="hero__right card">
-          <div class="card__title">Resumo do mês</div>
-          <div class="muted small" id="mesAtual"></div>
-          <canvas id="chart" width="600" height="240" aria-label="Gráfico"></canvas>
-          <div class="small muted tip">Tudo fica salvo só no seu iPhone (offline).</div>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <div class="card__title">Orçamento por categoria</div>
-          <div class="small muted">Acompanhe quanto falta para estourar o limite</div>
-          <div id="budgetList" class="budgetList"></div>
-        </div>
-
-        <div class="card">
-          <div class="card__title">Últimos lançamentos</div>
-          <div id="latestList" class="list"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- LANÇAR -->
-    <section class="view" id="view-lancar">
-      <div class="card">
-        <div class="card__title">Novo lançamento</div>
-
-        <form id="formLancamento" class="form">
-          <div class="segmented">
-            <button type="button" class="segBtn active" data-type="entrada">Entrada</button>
-            <button type="button" class="segBtn" data-type="saida">Saída</button>
+        <div class="card sectionCard">
+          <div class="sectionHead">
+            <div class="sectionTitle">Despesas Mensais</div>
+            <button class="linkBtn" id="btnGoBudget">Ver Todos</button>
           </div>
 
-          <label class="field">
-            <span>Descrição</span>
-            <input id="desc" required placeholder="Ex: Mercado, salário, gasolina..." />
-          </label>
-
-          <div class="row">
-            <label class="field">
-              <span>Valor (R$)</span>
-              <input id="valor" required inputmode="decimal" placeholder="Ex: 39,90" />
-            </label>
-
-            <label class="field">
-              <span>Data</span>
-              <input id="data" type="date" required />
-            </label>
+          <div class="legend">
+            <span><i class="dot dotA"></i> Gastos Fixos</span>
+            <span><i class="dot dotB"></i> Investimentos</span>
+            <span><i class="dot dotC"></i> Saúde</span>
+            <span><i class="dot dotD"></i> Lazer</span>
           </div>
 
-          <div class="row">
-            <label class="field">
-              <span>Categoria</span>
-              <select id="categoria"></select>
-            </label>
-
-            <label class="field">
-              <span>Forma</span>
-              <select id="forma">
-                <option>Dinheiro</option>
-                <option>Pix</option>
-                <option>Débito</option>
-                <option>Crédito</option>
-                <option>Outro</option>
-              </select>
-            </label>
+          <div class="chartBox">
+            <canvas id="chartLine" height="150"></canvas>
           </div>
 
-          <label class="field">
-            <span>Observação (opcional)</span>
-            <input id="nota" placeholder="Ex: parcelado, reembolso, etc." />
-          </label>
-
-          <button class="primary" type="submit">Salvar lançamento</button>
-        </form>
-      </div>
-    </section>
-
-    <!-- CATEGORIAS -->
-    <section class="view" id="view-categorias">
-      <div class="grid">
-        <div class="card">
-          <div class="card__title">Categorias</div>
-          <form id="formCategoria" class="row">
-            <input id="novaCategoria" placeholder="Nova categoria..." />
-            <button class="secondary" type="submit">Adicionar</button>
-          </form>
-          <div id="catList" class="chips"></div>
+          <div class="segmented" role="tablist" aria-label="Filtro período">
+            <button class="segBtn" data-range="week">Semana</button>
+            <button class="segBtn active" data-range="month">Mês</button>
+            <button class="segBtn" data-range="year">Ano</button>
+          </div>
         </div>
 
-        <div class="card">
-          <div class="card__title">Orçamentos (limite do mês)</div>
-          <div class="small muted">Defina o máximo para cada categoria</div>
-          <div id="budgetEditor" class="budgetEditor"></div>
-          <button class="secondary" id="btnSalvarBudgets">Salvar orçamentos</button>
+        <div class="card sectionCard">
+          <div class="sectionHead">
+            <div class="sectionTitle">Gastos Recentes</div>
+            <button class="pillBtn" id="btnAddFromHome">+ Adicionar Nova</button>
+          </div>
+
+          <div class="recentList" id="recentList"></div>
+
+          <button class="bigAdd" id="btnAddBig">
+            <span class="plusBox">+</span>
+            <span>Adicionar Nova</span>
+          </button>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- HISTÓRICO -->
-    <section class="view" id="view-historico">
-      <div class="card">
-        <div class="card__title">Histórico</div>
+      <!-- TRANSAÇÕES -->
+      <section class="screen" id="screen-transactions">
+        <div class="card sectionCard">
+          <div class="sectionHead">
+            <div class="sectionTitle">Transações</div>
+            <button class="pillBtn" id="btnAddFromTx">+ Adicionar</button>
+          </div>
 
-        <div class="row">
-          <label class="field">
-            <span>Mês</span>
-            <input type="month" id="filtroMes" />
-          </label>
-
-          <label class="field">
-            <span>Tipo</span>
-            <select id="filtroTipo">
-              <option value="todos">Todos</option>
+          <div class="filters">
+            <select id="filterType">
+              <option value="all">Todas</option>
               <option value="entrada">Entradas</option>
               <option value="saida">Saídas</option>
             </select>
-          </label>
 
-          <label class="field">
-            <span>Categoria</span>
-            <select id="filtroCategoria"></select>
-          </label>
+            <select id="filterMonth"></select>
+          </div>
+
+          <div class="txList" id="txList"></div>
+        </div>
+      </section>
+
+      <!-- ORÇAMENTO -->
+      <section class="screen" id="screen-budget">
+        <div class="card sectionCard">
+          <div class="sectionHead">
+            <div class="sectionTitle">Orçamento</div>
+            <button class="pillBtn" id="btnBudgetEdit">Editar limites</button>
+          </div>
+
+          <div class="budgetTop">
+            <div class="budgetBox">
+              <div class="muted">Gasto no mês</div>
+              <div class="budgetValue" id="uiSpentMonth">R$ 0,00</div>
+            </div>
+            <div class="budgetBox">
+              <div class="muted">Limite total</div>
+              <div class="budgetValue" id="uiBudgetTotal">R$ 0,00</div>
+            </div>
+          </div>
+
+          <div class="chartBox">
+            <canvas id="chartDonut" height="160"></canvas>
+          </div>
+
+          <div class="budgetList" id="budgetList"></div>
+        </div>
+      </section>
+
+      <!-- MAIS -->
+      <section class="screen" id="screen-more">
+        <div class="card sectionCard">
+          <div class="sectionHead">
+            <div class="sectionTitle">Mais</div>
+            <button class="pillBtn" id="btnReset">Zerar dados</button>
+          </div>
+
+          <div class="moreGrid">
+            <button class="tile" id="btnExport">Exportar backup</button>
+            <label class="tile fileTile">
+              Importar backup
+              <input type="file" id="importFile" accept="application/json" hidden />
+            </label>
+            <button class="tile" id="btnDemo">Adicionar exemplos</button>
+            <button class="tile" id="btnAbout">Sobre</button>
+          </div>
+
+          <div class="about" id="aboutBox" hidden>
+            <div class="muted">App pessoal (PWA)</div>
+            <div><b>Financeiro Matheus e Thaís</b></div>
+            <div class="muted">Tudo fica salvo só no seu iPhone (localStorage).</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottomNav">
+      <button class="navItem active" data-target="home">
+        <span class="navIco">🏠</span><span>Início</span>
+      </button>
+      <button class="navItem" data-target="transactions">
+        <span class="navIco">🔁</span><span>Transações</span>
+      </button>
+      <button class="navItem" data-target="budget">
+        <span class="navIco">📊</span><span>Orçamento</span>
+      </button>
+      <button class="navItem" data-target="more">
+        <span class="navIco">•••</span><span>Mais</span>
+      </button>
+    </nav>
+
+    <!-- MODAL (ADD / EDIT) -->
+    <div class="modalBackdrop" id="modalBackdrop" hidden></div>
+    <div class="modal" id="modal" hidden>
+      <div class="modalTop">
+        <div class="modalTitle" id="modalTitle">Nova transação</div>
+        <button class="iconBtn" id="btnClose" aria-label="Fechar">✕</button>
+      </div>
+
+      <form id="txForm" class="form">
+        <div class="formRow">
+          <label>Tipo</label>
+          <div class="chips">
+            <button type="button" class="chip active" data-type="entrada">Entrada</button>
+            <button type="button" class="chip" data-type="saida">Saída</button>
+          </div>
         </div>
 
-        <div id="histList" class="list"></div>
-      </div>
-    </section>
-  </main>
+        <div class="formRow">
+          <label>Categoria</label>
+          <select id="category"></select>
+        </div>
 
-  <!-- NAV -->
-  <nav class="bottomNav">
-    <button class="navBtn active" data-target="dashboard">🏠<span>Início</span></button>
-    <button class="navBtn" data-target="lancar">➕<span>Lançar</span></button>
-    <button class="navBtn" data-target="categorias">🧩<span>Categorias</span></button>
-    <button class="navBtn" data-target="historico">📜<span>Histórico</span></button>
-  </nav>
+        <div class="formRow">
+          <label>Descrição</label>
+          <input id="desc" placeholder="Ex: Supermercado, remédio..." maxlength="40" />
+        </div>
 
-  <!-- BACKUP MODAL -->
-  <dialog id="backupModal" class="modal">
-    <div class="modal__header">
-      <div>
-        <div class="modal__title">Backup / Importar</div>
-        <div class="small muted">Se quiser, você pode exportar seus dados para guardar.</div>
-      </div>
-      <button class="iconBtn" id="btnFecharModal">✕</button>
+        <div class="formRow">
+          <label>Valor (R$)</label>
+          <input id="amount" inputmode="decimal" placeholder="0,00" />
+        </div>
+
+        <div class="formRow">
+          <label>Data</label>
+          <input id="date" type="date" />
+        </div>
+
+        <button class="saveBtn" type="submit" id="btnSave">Salvar</button>
+        <button class="dangerBtn" type="button" id="btnDelete" hidden>Excluir</button>
+
+        <input type="hidden" id="editId" />
+      </form>
     </div>
 
-    <div class="modal__body">
-      <button class="secondary" id="btnExportar">⬇️ Exportar JSON</button>
+    <!-- MODAL BUDGET -->
+    <div class="modalBackdrop" id="budgetBackdrop" hidden></div>
+    <div class="modal" id="budgetModal" hidden>
+      <div class="modalTop">
+        <div class="modalTitle">Editar limites</div>
+        <button class="iconBtn" id="btnBudgetClose" aria-label="Fechar">✕</button>
+      </div>
 
-      <div class="divider"></div>
-
-      <label class="field">
-        <span>Importar JSON (substitui seus dados)</span>
-        <input type="file" id="importFile" accept="application/json" />
-      </label>
-
-      <div class="divider"></div>
-
-      <button class="danger" id="btnZerar">🗑️ Zerar tudo</button>
-      <div class="small muted">Atenção: isso apaga do iPhone.</div>
+      <form id="budgetForm" class="form">
+        <div class="muted" style="margin-bottom:6px;">Coloque limite mensal por categoria (R$)</div>
+        <div id="budgetInputs" class="budgetInputs"></div>
+        <button class="saveBtn" type="submit">Salvar limites</button>
+      </form>
     </div>
-  </dialog>
+
+  </div>
 
   <script src="app.js"></script>
 </body>

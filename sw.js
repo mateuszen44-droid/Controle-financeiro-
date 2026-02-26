@@ -1,16 +1,14 @@
-const CACHE = "fmth-pro-v2";
+const CACHE = "fmth_cache_v7";
 
 self.addEventListener("install", (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((cache) => {
-      return cache.addAll([
-        "./",
-        "./index.html",
-        "./styles.css",
-        "./app.js",
-        "./manifest.webmanifest"
-      ]);
-    })
+    caches.open(CACHE).then((cache) => cache.addAll([
+      "./",
+      "./index.html",
+      "./styles.css",
+      "./app.js",
+      "./manifest.webmanifest"
+    ]))
   );
 });
 

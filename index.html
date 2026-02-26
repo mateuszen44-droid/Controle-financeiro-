@@ -1,341 +1,273 @@
-:root{
-  --bg0:#050813;
-  --bg1:#0a1222;
-  --glass: rgba(255,255,255,.06);
-  --glass2: rgba(255,255,255,.09);
-  --stroke: rgba(255,255,255,.10);
-  --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.62);
-  --shadow: 0 24px 80px rgba(0,0,0,.45);
-  --shadow2: 0 18px 55px rgba(0,0,0,.35);
-  --r: 24px;
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>Financeiro Matheus e Thaís</title>
 
-  --green:#35f0c6;
-  --red:#ff5a5a;
-  --blue:#55a8ff;
-  --purple:#b69cff;
-  --orange:#ff6b3d;
-  --pink:#ff7bd2;
-}
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="style.css" />
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  color:var(--text);
-  background:
-    radial-gradient(1100px 700px at 22% 8%, rgba(85,168,255,.18), transparent 60%),
-    radial-gradient(1000px 800px at 92% 28%, rgba(182,156,255,.16), transparent 60%),
-    radial-gradient(900px 850px at 42% 92%, rgba(53,240,198,.10), transparent 65%),
-    linear-gradient(180deg, var(--bg0), var(--bg1));
-  overflow:hidden;
-}
+  <!-- Chart.js (gráficos reais) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
 
-.app{height:100%;display:flex;flex-direction:column}
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brandIcon">💰</div>
+        <div>
+          <div class="brandTitle">Financeiro</div>
+          <div class="brandSub">Matheus e Thaís</div>
+        </div>
+      </div>
 
-.topbar{
-  padding:18px 16px 10px 16px;
-  display:flex;align-items:center;justify-content:space-between;
-}
+      <div class="topActions">
+        <button class="iconBtn" id="btnBackup" title="Backup">⬇️</button>
+        <button class="iconBtn" id="btnMoreTop" title="Mais">⋯</button>
+      </div>
+    </header>
 
-.brand{display:flex;align-items:center;gap:12px}
-.brandIcon{
-  width:48px;height:48px;border-radius:18px;
-  display:grid;place-items:center;
-  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-  border:1px solid var(--stroke);
-  box-shadow: var(--shadow2);
-  font-size:18px;
-}
-.brandTitle{font-size:20px;font-weight:950;line-height:1.1}
-.brandSub{font-size:13px;color:var(--muted);margin-top:2px;font-weight:800}
+    <main class="content">
 
-.topActions{display:flex;gap:10px}
-.iconBtn{
-  width:46px;height:46px;border-radius:18px;
-  border:1px solid var(--stroke);
-  background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
-  color:var(--text);
-  box-shadow: var(--shadow2);
-  cursor:pointer;
-}
+      <!-- HOME -->
+      <section class="view active" id="view-home">
+        <div class="card">
+          <div class="cardRow">
+            <div class="muted">Total Balance</div>
+            <div class="tinyDots" id="monthBadge">—</div>
+          </div>
 
-.content{
-  flex:1;overflow:auto;
-  padding:10px 14px 120px 14px;
-}
+          <div class="balanceValue" id="balanceValue">R$ 0,00</div>
 
-.view{display:none}
-.view.active{display:block}
+          <div class="pillsRow">
+            <button class="pill pillIncome" id="pillIncome">
+              <div class="pillIcon">＋</div>
+              <div class="pillMain">
+                <div class="pillTitle">Entradas</div>
+                <div class="pillValue" id="sumIncome">R$ 0,00</div>
+              </div>
+              <div class="pillArrow">›</div>
+            </button>
 
-.card{
-  background: linear-gradient(180deg, var(--glass2), var(--glass));
-  border:1px solid var(--stroke);
-  border-radius: var(--r);
-  padding:16px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  margin-bottom:14px;
-}
+            <button class="pill pillExpense" id="pillExpense">
+              <div class="pillIcon">－</div>
+              <div class="pillMain">
+                <div class="pillTitle">Saídas</div>
+                <div class="pillValue" id="sumExpense">R$ 0,00</div>
+              </div>
+              <div class="pillArrow">›</div>
+            </button>
+          </div>
 
-.cardRow{
-  display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
-}
-.muted{color:var(--muted);font-weight:900;letter-spacing:.2px}
-.tinyDots{color:rgba(255,255,255,.45);font-size:14px;font-weight:900}
+          <div class="miniRow">
+            <div class="miniBox">
+              <div class="miniLabel">Investido</div>
+              <div class="miniValue" id="sumInvest">R$ 0,00</div>
+            </div>
+            <div class="miniBox">
+              <div class="miniLabel">Reserva / Caixinhas</div>
+              <div class="miniValue" id="sumBoxes">R$ 0,00</div>
+            </div>
+          </div>
+        </div>
 
-.balanceValue{
-  font-size:52px;
-  font-weight:950;
-  letter-spacing:.2px;
-  margin:10px 0 14px 0;
-}
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardTitle">Visão do mês</div>
+            <div class="filters">
+              <select id="selectMonth"></select>
+            </div>
+          </div>
 
-.pillsRow{display:flex;gap:12px}
-.pill{
-  flex:1;
-  display:flex;align-items:center;gap:10px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.10);
-  padding:12px 12px;
-  background: linear-gradient(90deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-  cursor:pointer;
-}
-.pillIcon{
-  width:34px;height:34px;border-radius:14px;
-  display:grid;place-items:center;
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.20);
-  font-weight:950;
-}
-.pillMain{display:flex;flex-direction:column;gap:2px}
-.pillTitle{font-weight:950}
-.pillValue{font-weight:950;opacity:.95}
-.pillArrow{margin-left:auto;color:rgba(255,255,255,.45);font-size:22px}
+          <div class="chartGrid">
+            <div class="chartCard">
+              <div class="chartTitle">Despesas por categoria</div>
+              <canvas id="chartExpenses"></canvas>
+            </div>
+            <div class="chartCard">
+              <div class="chartTitle">Saldo ao longo do mês</div>
+              <canvas id="chartBalance"></canvas>
+            </div>
+          </div>
+        </div>
 
-.pillIncome{box-shadow: inset 0 0 0 1px rgba(53,240,198,.18)}
-.pillIncome .pillIcon{color:var(--green)}
-.pillExpense{box-shadow: inset 0 0 0 1px rgba(255,90,90,.18)}
-.pillExpense .pillIcon{color:var(--red)}
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardTitle">Gastos recentes</div>
+            <button class="pillBtn" id="btnAddFromHome">＋ Adicionar</button>
+          </div>
+          <div class="list" id="recentList"></div>
+        </div>
+      </section>
 
-.miniRow{display:flex;gap:10px;margin-top:12px}
-.miniBox{
-  flex:1;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.16);
-  padding:12px;
-}
-.miniLabel{color:rgba(255,255,255,.65);font-weight:900;font-size:12px}
-.miniValue{font-weight:950;font-size:16px;margin-top:6px}
+      <!-- ADD -->
+      <section class="view" id="view-add">
+        <div class="card formCard">
+          <div class="cardRow">
+            <div class="cardTitle">Adicionar transação</div>
+            <div class="badge" id="badgeType">Saída</div>
+          </div>
 
-.cardTitle{font-size:18px;font-weight:950}
-.pillBtn{
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.06);
-  color:var(--text);
-  padding:10px 12px;border-radius:16px;
-  cursor:pointer;font-weight:950;
-}
+          <div class="typeToggle">
+            <button class="typeBtn" data-type="income">Entrada</button>
+            <button class="typeBtn active" data-type="expense">Saída</button>
+            <button class="typeBtn" data-type="investment">Invest.</button>
+          </div>
 
-.filters select{
-  background: rgba(0,0,0,.18);
-  border:1px solid rgba(255,255,255,.10);
-  color:var(--text);
-  border-radius:16px;
-  padding:10px 10px;
-  font-weight:900;
-}
+          <div class="formGrid">
+            <label class="field">
+              <span>Valor (R$)</span>
+              <input id="txAmount" inputmode="decimal" placeholder="0,00" />
+            </label>
 
-.chartGrid{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap:12px;
-  margin-top:12px;
-}
-.chartCard{
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(0,0,0,.18);
-  padding:12px;
-}
-.chartTitle{
-  font-weight:950;
-  color:rgba(255,255,255,.78);
-  margin-bottom:8px;
-}
+            <label class="field">
+              <span>Data</span>
+              <input id="txDate" type="date" />
+            </label>
 
-canvas{width:100% !important; height:220px !important;}
+            <label class="field" style="grid-column: 1 / -1;">
+              <span>Categoria</span>
+              <select id="txCategory"></select>
+            </label>
 
-.list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-.row{
-  display:flex;align-items:center;gap:12px;
-  padding:12px;
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(0,0,0,.16);
-}
-.rowIcon{
-  width:46px;height:46px;border-radius:18px;
-  display:grid;place-items:center;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.06);
-  font-size:18px;
-  box-shadow: 0 10px 28px rgba(0,0,0,.35);
-}
-.rowMain{flex:1;min-width:0}
-.rowTitle{font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rowSub{color:rgba(255,255,255,.58);margin-top:2px;font-weight:800;font-size:13px}
+            <label class="field" style="grid-column: 1 / -1;">
+              <span>Descrição (opcional)</span>
+              <input id="txNote" placeholder="Ex: Mercado, Uber, PIX..." />
+            </label>
+          </div>
 
-.rowRight{text-align:right;min-width:110px}
-.rowValue{font-weight:950}
-.rowPct{color:rgba(255,255,255,.58);font-weight:900;font-size:12px;margin-top:2px}
+          <div class="formActions">
+            <button class="btnPrimary" id="btnSaveTx">Salvar</button>
+            <button class="btnSecondary" id="btnCancelTx">Cancelar</button>
+          </div>
 
-.progress{
-  height:7px;border-radius:99px;
-  background: rgba(255,255,255,.10);
-  overflow:hidden;margin-top:9px;
-}
-.progress > div{
-  height:100%;
-  width:0%;
-  border-radius:99px;
-  background: linear-gradient(90deg, rgba(255,255,255,.35), rgba(255,255,255,.10));
-}
+          <div class="hint">Dica: clique em uma transação para editar/apagar.</div>
+        </div>
+      </section>
 
-.formCard .formGrid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:12px;
-  margin-top:12px;
-}
-.field{display:flex;flex-direction:column;gap:6px}
-.field span{color:rgba(255,255,255,.65);font-weight:900;font-size:12px}
-.field input,.field select{
-  background: rgba(0,0,0,.18);
-  border:1px solid rgba(255,255,255,.10);
-  color:var(--text);
-  border-radius:16px;
-  padding:12px 12px;
-  outline:none;
-  font-weight:900;
-}
-.formActions{display:flex;gap:10px;margin-top:14px}
-.btnPrimary{
-  flex:1;border:none;
-  background: linear-gradient(90deg, rgba(53,240,198,.20), rgba(85,168,255,.20));
-  border:1px solid rgba(255,255,255,.10);
-  color:var(--text);
-  font-weight:950;
-  padding:12px 12px;border-radius:16px;
-  cursor:pointer;
-}
-.btnSecondary{
-  width:120px;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.05);
-  color:var(--text);
-  font-weight:950;
-  padding:12px 12px;border-radius:16px;
-  cursor:pointer;
-}
-.btnDanger{
-  width:100%;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(255,90,90,.16);
-  color:var(--text);
-  font-weight:950;
-  padding:12px 12px;border-radius:16px;
-  cursor:pointer;
-}
+      <!-- CATEGORIES -->
+      <section class="view" id="view-categories">
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardTitle">Categorias & Orçamentos</div>
+            <button class="pillBtn" id="btnAddCategory">＋ Nova</button>
+          </div>
 
-.typeToggle,.segmented{
-  display:flex;gap:8px;
-  margin-top:12px;
-  padding:6px;border-radius:16px;
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(0,0,0,.16);
-}
-.typeBtn,.segBtn{
-  flex:1;border:none;background:transparent;
-  color:rgba(255,255,255,.70);
-  font-weight:950;
-  padding:10px;border-radius:12px;
-  cursor:pointer;
-}
-.typeBtn.active,.segBtn.active{
-  background: rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.10);
-  color:var(--text);
-}
+          <div class="hint">
+            Para categorias de <b>Saída</b>, você pode colocar <b>orçamento mensal</b> e ver a barra de consumo.
+          </div>
 
-.badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:6px 10px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.22);
-  font-weight:950;
-  font-size:12px;
-  color:rgba(255,255,255,.85);
-}
+          <div class="segmented">
+            <button class="segBtn active" data-catfilter="expense">Saídas</button>
+            <button class="segBtn" data-catfilter="income">Entradas</button>
+            <button class="segBtn" data-catfilter="investment">Invest.</button>
+          </div>
 
-.hint{margin-top:10px;color:rgba(255,255,255,.58);font-weight:750;font-size:13px;line-height:1.35}
+          <div class="list" id="catList"></div>
+        </div>
+      </section>
 
-.investTop{display:flex;gap:10px;margin-top:12px}
-.investBox{
-  flex:1;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(0,0,0,.16);
-  padding:12px;
-}
-.investValue{font-weight:950;font-size:18px;margin-top:6px}
+      <!-- INVESTMENTS -->
+      <section class="view" id="view-invest">
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardTitle">Investimentos</div>
+            <button class="pillBtn" id="btnAddInvest">＋ Investir</button>
+          </div>
 
-/* Bottom nav */
-.bottomNav{
-  position:fixed;left:0;right:0;bottom:0;
-  padding:10px 12px 18px 12px;
-  background: linear-gradient(180deg, transparent, rgba(0,0,0,.50));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-.navShell{
-  display:flex;gap:10px;
-  border-radius:24px;
-  padding:10px;
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(0,0,0,.22);
-  box-shadow: 0 18px 55px rgba(0,0,0,.45);
-}
-.navBtn{
-  flex:1;
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.04);
-  color:rgba(255,255,255,.72);
-  padding:10px 10px;
-  border-radius:18px;
-  font-weight:950;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.navBtn span{font-size:12px;font-weight:900}
-.navBtn.active{
-  background: rgba(85,168,255,.18);
-  border-color: rgba(85,168,255,.20);
-  color:var(--text);
-  box-shadow: 0 0 0 1px rgba(85,168,255,.14) inset;
-}
-.navBtn.center{
-  flex:0;
-  width:62px;height:62px;
-  border-radius:22px;
-  font-size:26px;
-  background: linear-gradient(180deg, rgba(53,240,198,.18), rgba(85,168,255,.18));
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow: 0 22px 65px rgba(0,0,0,.55);
-}
+          <div class="investTop">
+            <div class="investBox">
+              <div class="miniLabel">Total investido</div>
+              <div class="investValue" id="investTotal">R$ 0,00</div>
+            </div>
+            <div class="investBox">
+              <div class="miniLabel">Aporte no mês</div>
+              <div class="investValue" id="investMonth">R$ 0,00</div>
+            </div>
+          </div>
+
+          <div class="chartCard" style="margin-top:12px;">
+            <div class="chartTitle">Aportes por categoria</div>
+            <canvas id="chartInvest"></canvas>
+          </div>
+
+          <div class="cardRow" style="margin-top:12px;">
+            <div class="cardTitle">Últimos aportes</div>
+          </div>
+          <div class="list" id="investList"></div>
+        </div>
+      </section>
+
+      <!-- GOALS / BOXES -->
+      <section class="view" id="view-goals">
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardTitle">Metas & Caixinhas</div>
+            <button class="pillBtn" id="btnAddGoal">＋ Criar</button>
+          </div>
+
+          <div class="hint">
+            Metas: Viagem fim do ano, Troca do carro.<br/>
+            Caixinhas: Reserva de Emergência (guardar dinheiro).
+          </div>
+
+          <div class="segmented">
+            <button class="segBtn active" data-goalfilter="all">Tudo</button>
+            <button class="segBtn" data-goalfilter="box">Caixinhas</button>
+            <button class="segBtn" data-goalfilter="goal">Metas</button>
+          </div>
+
+          <div class="list" id="goalList"></div>
+        </div>
+      </section>
+
+      <!-- MORE -->
+      <section class="view" id="view-more">
+        <div class="card">
+          <div class="cardRow">
+            <div class="cardTitle">Backup & Segurança</div>
+            <div class="tinyDots">⋯</div>
+          </div>
+
+          <div class="hint">
+            Seus dados ficam <b>no seu aparelho</b> (LocalStorage).<br/>
+            Para trocar de celular, use <b>Exportar</b> e depois <b>Importar</b>.
+          </div>
+
+          <div class="formActions">
+            <button class="btnPrimary" id="btnExport">Exportar Backup</button>
+            <button class="btnSecondary" id="btnImport">Importar</button>
+          </div>
+
+          <input id="fileImport" type="file" accept="application/json" style="display:none" />
+
+          <div class="formActions" style="margin-top:12px;">
+            <button class="btnDanger" id="btnReset">Zerar tudo</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="bottomNav">
+      <div class="navShell">
+        <button class="navBtn active" data-go="home">🏠 <span>Início</span></button>
+        <button class="navBtn" data-go="categories">🧩 <span>Categorias</span></button>
+        <button class="navBtn center" data-go="add">＋</button>
+        <button class="navBtn" data-go="invest">📈 <span>Invest.</span></button>
+        <button class="navBtn" data-go="goals">🎯 <span>Metas</span></button>
+      </div>
+    </nav>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+    }
+  </script>
+</body>
+</html>

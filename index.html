@@ -1,416 +1,899 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1020" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Financeiro" />
-  <meta name="format-detection" content="telephone=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Financeiro Mateus e Thaís</title>
+  <style>
+    :root{
+      --bg1:#071124;
+      --bg2:#0b1e3a;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.10);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.65);
+      --green:#22c55e;
+      --red:#ef4444;
+      --blue:#3b82f6;
+      --amber:#f59e0b;
+      --radius:22px;
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+    }
 
-  <title>Financeiro Matheus e Thaís</title>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: radial-gradient(1100px 700px at 30% 10%, rgba(59,130,246,.20), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 40%, rgba(239,68,68,.15), transparent 60%),
+                  linear-gradient(160deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      padding: 18px 16px 28px;
+    }
 
-  <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css" />
+    .wrap{max-width:980px;margin:0 auto}
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    /* Header */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 6px 2px 14px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .appicon{
+      width:46px;height:46px;border-radius:16px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.08);
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      font-size:22px;
+    }
+    .title h1{margin:0;font-size:34px;line-height:1.05}
+    .title small{display:block;color:var(--muted);margin-top:2px;font-size:16px}
+
+    .actions{display:flex;gap:10px}
+    .iconbtn{
+      width:46px;height:46px;border-radius:16px;
+      background: rgba(255,255,255,.07);
+      border:1px solid var(--stroke);
+      display:grid;place-items:center;
+      color:var(--text);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      cursor:pointer;
+      user-select:none;
+    }
+    .iconbtn:active{transform:scale(.98)}
+
+    /* Cards */
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      overflow:hidden; /* evita estourar */
+    }
+
+    .hero{
+      padding: 18px 18px 16px;
+      position:relative;
+    }
+
+    .heroTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 6px;
+      flex-wrap:wrap;
+    }
+
+    .heroLabel{
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.2px;
+      font-size:18px;
+    }
+    .heroMonth{
+      display:block;
+      font-size:34px;
+      font-weight:800;
+      margin-top:2px;
+      color: rgba(255,255,255,.70);
+    }
+
+    .select{
+      appearance:none;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding: 12px 42px 12px 14px;
+      border-radius: 16px;
+      font-weight:700;
+      cursor:pointer;
+      position:relative;
+      min-width: 160px;
+    }
+    .selectWrap{position:relative}
+    .selectWrap:after{
+      content:"▾";
+      position:absolute;
+      right:14px; top: 10px;
+      color:var(--muted);
+      pointer-events:none;
+      font-size:18px;
+    }
+
+    /* ✅ CORREÇÃO DO VALOR GIGANTE: clamp + overflow seguro */
+    .balanceValue{
+      font-weight:900;
+      font-size: clamp(44px, 10.5vw, 92px);
+      line-height: 0.95;
+      letter-spacing:-1.5px;
+      margin: 10px 0 14px;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .summaryRow{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap; /* ✅ no iPhone quebra embaixo se não couber */
+    }
+
+    .pillCard{
+      flex: 1 1 300px;
+      min-width: 0;
+      border-radius: 22px;
+      padding: 14px 14px;
+      background: rgba(0,0,0,.12);
+      border:1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .pillLeft{display:flex;align-items:center;gap:12px;min-width:0}
+    .badge{
+      width:54px;height:54px;border-radius:18px;
+      display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-size:22px;
+      flex: 0 0 auto;
+    }
+    .pillTxt{min-width:0}
+    .pillTxt .k{font-weight:900;font-size:26px;line-height:1.0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pillTxt .v{font-weight:900;font-size:30px;line-height:1.0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pillRight{
+      display:flex;gap:8px;align-items:center;flex:0 0 auto;
+    }
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 14px;
+      font-weight:800;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{transform:scale(.99)}
+    .btn.primary{background: rgba(59,130,246,.22);border-color: rgba(59,130,246,.35)}
+    .btn.green{background: rgba(34,197,94,.18);border-color: rgba(34,197,94,.35)}
+    .btn.red{background: rgba(239,68,68,.18);border-color: rgba(239,68,68,.35)}
+
+    .smallGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width:620px){
+      .smallGrid{grid-template-columns:1fr}
+    }
+    .mini{
+      border-radius: 22px;
+      padding: 14px;
+      background: rgba(0,0,0,.12);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .mini .t{color:var(--muted);font-weight:800;font-size:18px;margin-bottom:6px}
+    .mini .n{font-weight:900;font-size:34px}
+
+    .section{margin-top:14px}
+    .section h2{
+      margin: 0 0 8px;
+      font-size: 34px;
+      letter-spacing:-.8px;
+    }
+    .section small{color:var(--muted);font-weight:700}
+
+    .row{
+      display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap
+    }
+
+    .tabs{
+      display:flex;gap:6px;
+      background: rgba(255,255,255,.06);
+      border:1px solid var(--stroke);
+      border-radius: 18px;
+      padding: 4px;
+    }
+    .tab{
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight:900;
+      cursor:pointer;
+      color:var(--muted);
+      user-select:none;
+    }
+    .tab.active{
+      background: rgba(59,130,246,.20);
+      border: 1px solid rgba(59,130,246,.35);
+      color:var(--text);
+    }
+
+    .list{
+      margin-top: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      padding: 12px 12px;
+    }
+    .itemL{min-width:0}
+    .itemL b{display:block;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .itemL span{display:block;color:var(--muted);font-weight:700;font-size:14px;margin-top:2px}
+    .amt{font-weight:900;font-size:18px;white-space:nowrap}
+    .amt.green{color: #34d399}
+    .amt.red{color: #fb7185}
+
+    /* Modal */
+    .backdrop{
+      position:fixed;inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .backdrop.show{display:flex}
+    .modal{
+      width:min(720px, 100%);
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(15,23,42,.98), rgba(2,6,23,.98));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 40px 90px rgba(0,0,0,.55);
+      padding: 14px;
+      max-height: 85vh;
+      overflow:auto;
+    }
+    .modalHeader{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding: 8px 6px 12px;
+    }
+    .modalHeader h3{margin:0;font-size:20px}
+    .close{cursor:pointer;color:var(--muted);font-weight:900}
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field label{color:var(--muted);font-weight:800;font-size:13px}
+    input, select, textarea{
+      width:100%;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding: 12px 12px;
+      font-weight:700;
+      outline:none;
+    }
+    textarea{min-height:84px;resize:vertical}
+    .full{grid-column:1/-1}
+    .modalActions{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+
+    /* Tiny helper */
+    .hint{color:var(--muted);font-weight:700;font-size:13px;margin-top:10px}
+  </style>
 </head>
 
 <body>
-  <div class="app">
-    <!-- TOPBAR -->
-    <header class="topbar">
+  <div class="wrap">
+
+    <div class="topbar">
       <div class="brand">
-        <div class="appicon"><span>💰</span></div>
-        <div class="brandtxt">
-          <div class="brandtitle">Financeiro</div>
-          <div class="brandsub">Matheus e Thaís</div>
+        <div class="appicon">💰</div>
+        <div class="title">
+          <h1>Financeiro</h1>
+          <small>Matheus e Thaís</small>
         </div>
       </div>
 
-      <div class="topactions">
+      <div class="actions">
         <button class="iconbtn" id="btnExport" title="Exportar backup">⬇️</button>
         <button class="iconbtn" id="btnImport" title="Importar backup">📥</button>
       </div>
-    </header>
+    </div>
 
-    <!-- PAGES -->
-    <main class="pages">
-      <!-- HOME -->
-      <section class="page active" id="page-home">
-        <section class="hero glass">
-          <div class="herotop">
-            <div class="herolabel">
-              <div class="kicker">Total Balance</div>
-              <div class="subkicker" id="monthLabel">Mês</div>
-            </div>
+    <div class="card hero">
+      <div class="heroTop">
+        <div>
+          <div class="heroLabel">Total Balance</div>
+          <span class="heroMonth" id="monthLabel">Fev 2026</span>
+        </div>
+        <div class="selectWrap">
+          <select class="select" id="monthSelect"></select>
+        </div>
+      </div>
 
-            <div class="monthpill">
-              <select id="monthSelect" aria-label="Selecionar mês"></select>
-              <span class="caret">⌄</span>
-            </div>
-          </div>
+      <div class="balanceValue" id="balanceValue">R$ 0,00</div>
 
-          <div class="herovalue" id="balanceValue">R$ 0,00</div>
-
-          <div class="heroactions">
-            <button class="pillaction in" id="btnQuickIncome">
-              <div class="pillico">＋</div>
-              <div class="pilltxt">
-                <div class="pilltitle">Entradas</div>
-                <div class="pillvalue" id="incomeValue">R$ 0,00</div>
-              </div>
-              <div class="pillarrow">›</div>
-            </button>
-
-            <button class="pillaction out" id="btnQuickExpense">
-              <div class="pillico">－</div>
-              <div class="pilltxt">
-                <div class="pilltitle">Saídas</div>
-                <div class="pillvalue" id="expenseValue">R$ 0,00</div>
-              </div>
-              <div class="pillarrow">›</div>
-            </button>
-          </div>
-
-          <div class="heromini">
-            <div class="minicard">
-              <div class="minilabel">Investido</div>
-              <div class="minivalue" id="investedValue">R$ 0,00</div>
-            </div>
-            <div class="minicard">
-              <div class="minilabel">Reserva / Caixinhas</div>
-              <div class="minivalue" id="boxesValue">R$ 0,00</div>
+      <!-- ✅ Entradas / Saídas agora com botão de CATEGORIAS -->
+      <div class="summaryRow">
+        <div class="pillCard">
+          <div class="pillLeft">
+            <div class="badge" style="border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.10)">＋</div>
+            <div class="pillTxt">
+              <div class="k" style="color:rgba(59,130,246,.95)">Entradas</div>
+              <div class="v" style="color:rgba(52,211,153,.95)" id="inValue">R$ 0,00</div>
             </div>
           </div>
-        </section>
-
-        <section class="section glass">
-          <div class="sectionhead">
-            <div>
-              <div class="sectiontitle">Visão do mês</div>
-              <div class="sectionsub">Gráficos reais (Chart.js)</div>
-            </div>
-
-            <div class="segmented" id="rangeSeg">
-              <button class="segbtn active" data-range="month">Mês</button>
-              <button class="segbtn" data-range="year">Ano</button>
-            </div>
+          <div class="pillRight">
+            <button class="btn green" data-open="tx" data-type="entrada">+ Add</button>
+            <button class="btn" data-open="cat" data-type="entrada">Categorias</button>
           </div>
-
-          <div class="chartgrid">
-            <div class="chartcard">
-              <div class="charttitle">Despesas por categoria</div>
-              <canvas id="donut" height="190"></canvas>
-            </div>
-
-            <div class="chartcard">
-              <div class="charttitle">Entradas x Saídas</div>
-              <canvas id="line" height="190"></canvas>
-            </div>
-          </div>
-        </section>
-
-        <section class="section glass">
-          <div class="sectionhead">
-            <div>
-              <div class="sectiontitle">Gastos recentes</div>
-              <div class="sectionsub">Com barras de orçamento</div>
-            </div>
-            <button class="ghost" id="btnGoTransactions">Ver todos</button>
-          </div>
-
-          <div class="recent" id="recentList"></div>
-        </section>
-
-        <section class="section glass">
-          <div class="sectionhead">
-            <div>
-              <div class="sectiontitle">Metas & Caixinhas</div>
-              <div class="sectionsub">Reserva por objetivo</div>
-            </div>
-            <button class="ghost" id="btnGoGoals">Gerenciar</button>
-          </div>
-
-          <div class="goals" id="goalsPreview"></div>
-        </section>
-
-        <div class="spacer"></div>
-      </section>
-
-      <!-- TRANSAÇÕES -->
-      <section class="page" id="page-transactions">
-        <section class="pagetop glass">
-          <div class="ptrow">
-            <div>
-              <div class="sectiontitle">Transações</div>
-              <div class="sectionsub">Toque para excluir</div>
-            </div>
-            <button class="ghost" id="btnAddTxTop">Adicionar</button>
-          </div>
-
-          <div class="filters">
-            <div class="filterpill">
-              <span>Tipo</span>
-              <select id="filterType">
-                <option value="all">Todos</option>
-                <option value="income">Entradas</option>
-                <option value="expense">Saídas</option>
-              </select>
-            </div>
-
-            <div class="filterpill">
-              <span>Mês</span>
-              <select id="filterMonth"></select>
-            </div>
-          </div>
-        </section>
-
-        <section class="list glass" id="txList"></section>
-        <div class="spacer"></div>
-      </section>
-
-      <!-- CATEGORIAS -->
-      <section class="page" id="page-categories">
-        <section class="pagetop glass">
-          <div class="ptrow">
-            <div>
-              <div class="sectiontitle">Categorias</div>
-              <div class="sectionsub">Orçamentos por mês</div>
-            </div>
-            <button class="ghost" id="btnAddCategory">Adicionar</button>
-          </div>
-        </section>
-
-        <section class="cats" id="catsGrid"></section>
-        <div class="spacer"></div>
-      </section>
-
-      <!-- INVESTIMENTOS -->
-      <section class="page" id="page-investments">
-        <section class="pagetop glass">
-          <div class="ptrow">
-            <div>
-              <div class="sectiontitle">Investimentos</div>
-              <div class="sectionsub">Aportes e evolução</div>
-            </div>
-            <button class="ghost" id="btnAddInvestment">Novo</button>
-          </div>
-        </section>
-
-        <section class="section glass">
-          <div class="sectionhead">
-            <div>
-              <div class="sectiontitle">Total investido</div>
-              <div class="sectionsub">Somatório dos aportes</div>
-            </div>
-            <div class="bigpill" id="investTotalPill">R$ 0,00</div>
-          </div>
-          <canvas id="investLine" height="190"></canvas>
-        </section>
-
-        <section class="list glass" id="invList"></section>
-        <div class="spacer"></div>
-      </section>
-
-      <!-- METAS / CAIXINHAS -->
-      <section class="page" id="page-goals">
-        <section class="pagetop glass">
-          <div class="ptrow">
-            <div>
-              <div class="sectiontitle">Metas & Caixinhas</div>
-              <div class="sectionsub">Adicionar e editar reservas</div>
-            </div>
-            <button class="ghost" id="btnAddGoal">Adicionar</button>
-          </div>
-        </section>
-
-        <section class="goals full" id="goalsList"></section>
-        <div class="spacer"></div>
-      </section>
-    </main>
-
-    <!-- BOTTOM NAV -->
-    <nav class="bottomnav glass">
-      <button class="tab active" data-tab="home">🏠<span>Início</span></button>
-      <button class="tab" data-tab="transactions">🧾<span>Trans.</span></button>
-
-      <button class="fab" id="fabAdd" aria-label="Adicionar">＋</button>
-
-      <button class="tab" data-tab="categories">🧩<span>Cat.</span></button>
-      <button class="tab" data-tab="investments">📈<span>Invest</span></button>
-      <button class="tab" data-tab="goals">🎯<span>Metas</span></button>
-    </nav>
-
-    <!-- MODAL TX -->
-    <div class="modal" id="modalTx" aria-hidden="true">
-      <div class="modalcard glass">
-        <div class="modalhead">
-          <div class="modaltitle">Adicionar</div>
-          <button class="iconbtn" id="btnCloseTx">✕</button>
         </div>
 
-        <div class="modalbody">
-          <div class="row2">
-            <label class="field">
-              <span>Tipo</span>
-              <select id="txType">
-                <option value="expense">Saída</option>
-                <option value="income">Entrada</option>
-              </select>
-            </label>
-            <label class="field">
-              <span>Data</span>
-              <input type="date" id="txDate" />
-            </label>
+        <div class="pillCard">
+          <div class="pillLeft">
+            <div class="badge" style="border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.10)">－</div>
+            <div class="pillTxt">
+              <div class="k" style="color:rgba(59,130,246,.95)">Saídas</div>
+              <div class="v" style="color:rgba(251,113,133,.95)" id="outValue">R$ 0,00</div>
+            </div>
           </div>
-
-          <label class="field">
-            <span>Descrição</span>
-            <input type="text" id="txDesc" placeholder="Ex: Supermercado" maxlength="40" />
-          </label>
-
-          <div class="row2">
-            <label class="field">
-              <span>Categoria</span>
-              <select id="txCategory"></select>
-            </label>
-            <label class="field">
-              <span>Valor (R$)</span>
-              <input type="number" id="txAmount" step="0.01" inputmode="decimal" placeholder="0,00" />
-            </label>
+          <div class="pillRight">
+            <button class="btn red" data-open="tx" data-type="saida">+ Add</button>
+            <button class="btn" data-open="cat" data-type="saida">Categorias</button>
           </div>
+        </div>
+      </div>
 
-          <label class="field">
-            <span>Caixinha (opcional)</span>
-            <select id="txGoal">
-              <option value="">Nenhuma</option>
-            </select>
-          </label>
-
-          <div class="actions">
-            <button class="btn secondary" id="btnCancelTx">Cancelar</button>
-            <button class="btn primary" id="btnSaveTx">Salvar</button>
-          </div>
+      <div class="smallGrid">
+        <div class="mini">
+          <div class="t">Investido</div>
+          <div class="n" id="invValue">R$ 0,00</div>
+        </div>
+        <div class="mini">
+          <div class="t">Reserva / Caixinhas</div>
+          <div class="n" id="boxValue">R$ 0,00</div>
         </div>
       </div>
     </div>
 
-    <!-- MODAL CATEGORY -->
-    <div class="modal" id="modalCat" aria-hidden="true">
-      <div class="modalcard glass">
-        <div class="modalhead">
-          <div class="modaltitle">Nova categoria</div>
-          <button class="iconbtn" id="btnCloseCat">✕</button>
+    <div class="card section">
+      <div class="row">
+        <div>
+          <h2>Visão do mês</h2>
+          <small>Sem Chart.js aqui (pra copiar e colar). Mas as categorias e transações funcionam 100%.</small>
         </div>
-
-        <div class="modalbody">
-          <label class="field">
-            <span>Nome</span>
-            <input type="text" id="catName" maxlength="24" placeholder="Ex: Saúde" />
-          </label>
-
-          <div class="row2">
-            <label class="field">
-              <span>Orçamento mensal (R$)</span>
-              <input type="number" id="catBudget" step="0.01" inputmode="decimal" placeholder="0,00" />
-            </label>
-            <label class="field">
-              <span>Ícone (emoji)</span>
-              <input type="text" id="catEmoji" maxlength="2" placeholder="Ex: 🛒" />
-            </label>
-          </div>
-
-          <label class="field">
-            <span>Cor</span>
-            <input type="color" id="catColor" value="#4aa3ff" />
-          </label>
-
-          <div class="actions">
-            <button class="btn secondary" id="btnCancelCat">Cancelar</button>
-            <button class="btn primary" id="btnSaveCat">Salvar</button>
-          </div>
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-tab="mes">Mês</div>
+          <div class="tab" data-tab="ano">Ano</div>
         </div>
       </div>
+
+      <div class="hint" id="emptyHint"></div>
+
+      <div class="list" id="recentList"></div>
     </div>
 
-    <!-- MODAL GOAL -->
-    <div class="modal" id="modalGoal" aria-hidden="true">
-      <div class="modalcard glass">
-        <div class="modalhead">
-          <div class="modaltitle">Meta / Caixinha</div>
-          <button class="iconbtn" id="btnCloseGoal">✕</button>
-        </div>
-
-        <div class="modalbody">
-          <label class="field">
-            <span>Nome</span>
-            <input type="text" id="goalName" maxlength="26" placeholder="Ex: Reserva Emergência" />
-          </label>
-
-          <div class="row2">
-            <label class="field">
-              <span>Meta (R$)</span>
-              <input type="number" id="goalTarget" step="0.01" inputmode="decimal" placeholder="0,00" />
-            </label>
-            <label class="field">
-              <span>Atual (R$)</span>
-              <input type="number" id="goalCurrent" step="0.01" inputmode="decimal" placeholder="0,00" />
-            </label>
-          </div>
-
-          <div class="actions">
-            <button class="btn secondary" id="btnCancelGoal">Cancelar</button>
-            <button class="btn primary" id="btnSaveGoal">Salvar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL INVEST -->
-    <div class="modal" id="modalInv" aria-hidden="true">
-      <div class="modalcard glass">
-        <div class="modalhead">
-          <div class="modaltitle">Novo aporte</div>
-          <button class="iconbtn" id="btnCloseInv">✕</button>
-        </div>
-
-        <div class="modalbody">
-          <div class="row2">
-            <label class="field">
-              <span>Data</span>
-              <input type="date" id="invDate" />
-            </label>
-            <label class="field">
-              <span>Valor (R$)</span>
-              <input type="number" id="invAmount" step="0.01" inputmode="decimal" placeholder="0,00" />
-            </label>
-          </div>
-
-          <label class="field">
-            <span>Descrição</span>
-            <input type="text" id="invDesc" maxlength="40" placeholder="Ex: Aporte CDB" />
-          </label>
-
-          <div class="actions">
-            <button class="btn secondary" id="btnCancelInv">Cancelar</button>
-            <button class="btn primary" id="btnSaveInv">Salvar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- IMPORT FILE -->
-    <input type="file" id="fileImport" accept="application/json" hidden />
   </div>
 
-  <script src="./app.js"></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+  <!-- MODAL: Transação -->
+  <div class="backdrop" id="modalTx">
+    <div class="modal">
+      <div class="modalHeader">
+        <h3 id="txTitle">Adicionar transação</h3>
+        <div class="close" data-close="modalTx">Fechar</div>
+      </div>
+
+      <div class="form">
+        <div class="field">
+          <label>Tipo</label>
+          <select id="txType">
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Categoria</label>
+          <select id="txCategory"></select>
+        </div>
+
+        <div class="field">
+          <label>Valor (R$)</label>
+          <input id="txValue" inputmode="decimal" placeholder="Ex: 39,90" />
+        </div>
+
+        <div class="field">
+          <label>Data</label>
+          <input id="txDate" type="date" />
+        </div>
+
+        <div class="field full">
+          <label>Descrição</label>
+          <input id="txDesc" placeholder="Ex: Mercado, Uber, PIX..." />
+        </div>
+      </div>
+
+      <div class="modalActions">
+        <button class="btn" data-close="modalTx">Cancelar</button>
+        <button class="btn primary" id="saveTx">Salvar</button>
+      </div>
+      <div class="hint">Dica: entradas e saídas usam categorias separadas. Você cria em “Categorias”.</div>
+    </div>
+  </div>
+
+  <!-- MODAL: Categorias -->
+  <div class="backdrop" id="modalCat">
+    <div class="modal">
+      <div class="modalHeader">
+        <h3 id="catTitle">Categorias</h3>
+        <div class="close" data-close="modalCat">Fechar</div>
+      </div>
+
+      <div class="form">
+        <div class="field">
+          <label>Tipo</label>
+          <select id="catType">
+            <option value="entrada">Entrada</option>
+            <option value="saida">Saída</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Nova categoria</label>
+          <input id="catName" placeholder="Ex: Salário / Saúde / Mercado" />
+        </div>
+      </div>
+
+      <div class="modalActions">
+        <button class="btn" data-close="modalCat">Cancelar</button>
+        <button class="btn primary" id="addCat">Adicionar</button>
+      </div>
+
+      <div class="hint">Toque em uma categoria para apagar.</div>
+
+      <div class="list" id="catList"></div>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   STORAGE
+========================= */
+const KEY = "fmth_v1";
+
+function loadDB(){
+  const raw = localStorage.getItem(KEY);
+  if(raw){
+    try { return JSON.parse(raw); } catch(e){}
+  }
+  // defaults
+  return {
+    categories: [
+      { id: cryptoId(), name: "Salário", type: "entrada" },
+      { id: cryptoId(), name: "PIX Recebido", type: "entrada" },
+      { id: cryptoId(), name: "Mercado", type: "saida" },
+      { id: cryptoId(), name: "Saúde", type: "saida" },
+      { id: cryptoId(), name: "Transporte", type: "saida" }
+    ],
+    transactions: [],
+    month: currentMonthKey()
+  };
+}
+function saveDB(db){ localStorage.setItem(KEY, JSON.stringify(db)); }
+
+function cryptoId(){
+  return "id_" + Math.random().toString(16).slice(2) + Date.now().toString(16);
+}
+
+let db = loadDB();
+
+/* =========================
+   HELPERS
+========================= */
+const fmt = new Intl.NumberFormat("pt-BR", { style:"currency", currency:"BRL" });
+
+function parseBRL(v){
+  if(typeof v !== "string") return Number(v)||0;
+  v = v.trim();
+  if(!v) return 0;
+  // aceita 1.234,56 ou 1234,56 ou 1234.56
+  v = v.replace(/\s/g,"").replace(/\./g,"").replace(",",".");
+  const n = Number(v);
+  return isFinite(n) ? n : 0;
+}
+
+function monthKey(dateStr){
+  const d = new Date(dateStr);
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  return `${y}-${m}`;
+}
+function currentMonthKey(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  return `${y}-${m}`;
+}
+function monthLabel(key){
+  const [y,m] = key.split("-");
+  const months = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+  return `${months[Number(m)-1]} ${y}`;
+}
+function todayISO(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function catNameById(id){
+  const c = db.categories.find(x=>x.id===id);
+  return c ? c.name : "Sem categoria";
+}
+
+/* =========================
+   UI refs
+========================= */
+const monthSelect = document.getElementById("monthSelect");
+const monthLabelEl = document.getElementById("monthLabel");
+const balanceValue = document.getElementById("balanceValue");
+const inValue = document.getElementById("inValue");
+const outValue = document.getElementById("outValue");
+const invValue = document.getElementById("invValue");
+const boxValue = document.getElementById("boxValue");
+const recentList = document.getElementById("recentList");
+const emptyHint = document.getElementById("emptyHint");
+
+const modalTx = document.getElementById("modalTx");
+const modalCat = document.getElementById("modalCat");
+
+const txTitle = document.getElementById("txTitle");
+const txType = document.getElementById("txType");
+const txCategory = document.getElementById("txCategory");
+const txValue = document.getElementById("txValue");
+const txDate = document.getElementById("txDate");
+const txDesc = document.getElementById("txDesc");
+const saveTxBtn = document.getElementById("saveTx");
+
+const catTitle = document.getElementById("catTitle");
+const catType = document.getElementById("catType");
+const catName = document.getElementById("catName");
+const addCatBtn = document.getElementById("addCat");
+const catList = document.getElementById("catList");
+
+document.getElementById("btnExport").addEventListener("click", exportBackup);
+document.getElementById("btnImport").addEventListener("click", importBackup);
+
+/* =========================
+   Month select build
+========================= */
+function rebuildMonthSelect(){
+  // months from transactions + current
+  const set = new Set([db.month, currentMonthKey()]);
+  db.transactions.forEach(t => set.add(monthKey(t.date)));
+  const keys = [...set].sort().reverse();
+  monthSelect.innerHTML = "";
+  keys.forEach(k=>{
+    const opt = document.createElement("option");
+    opt.value = k;
+    opt.textContent = monthLabel(k);
+    monthSelect.appendChild(opt);
+  });
+  monthSelect.value = db.month;
+  monthLabelEl.textContent = monthLabel(db.month);
+}
+monthSelect.addEventListener("change", ()=>{
+  db.month = monthSelect.value;
+  saveDB(db);
+  render();
+});
+
+/* =========================
+   Open modals
+========================= */
+document.querySelectorAll("[data-open]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const open = btn.getAttribute("data-open");
+    const type = btn.getAttribute("data-type") || "entrada";
+    if(open === "tx") openTx(type);
+    if(open === "cat") openCat(type);
+  });
+});
+document.querySelectorAll("[data-close]").forEach(x=>{
+  x.addEventListener("click", ()=> closeModal(x.getAttribute("data-close")));
+});
+function closeModal(id){
+  document.getElementById(id).classList.remove("show");
+}
+
+/* =========================
+   Transactions
+========================= */
+let editingTxId = null;
+
+function openTx(type){
+  editingTxId = null;
+  txTitle.textContent = "Adicionar transação";
+  txType.value = type;
+  txValue.value = "";
+  txDesc.value = "";
+  txDate.value = todayISO();
+  rebuildTxCategory();
+  modalTx.classList.add("show");
+}
+
+function rebuildTxCategory(){
+  const type = txType.value;
+  const cats = db.categories.filter(c=>c.type===type);
+  txCategory.innerHTML = "";
+  if(cats.length === 0){
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Sem categorias (crie em Categorias)";
+    txCategory.appendChild(opt);
+    return;
+  }
+  cats.forEach(c=>{
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.name;
+    txCategory.appendChild(opt);
+  });
+}
+txType.addEventListener("change", rebuildTxCategory);
+
+saveTxBtn.addEventListener("click", ()=>{
+  const type = txType.value;
+  const value = parseBRL(txValue.value);
+  const date = txDate.value || todayISO();
+  const desc = (txDesc.value || "").trim() || "Sem descrição";
+  const categoryId = txCategory.value || "";
+
+  if(value <= 0){
+    alert("Coloque um valor maior que zero.");
+    return;
+  }
+  if(!categoryId){
+    alert("Crie/seleciona uma categoria para esse tipo.");
+    return;
+  }
+
+  const tx = { id: cryptoId(), type, value, date, desc, categoryId };
+  db.transactions.unshift(tx);
+  // atualiza mês para o mês da transação
+  db.month = monthKey(date);
+  saveDB(db);
+  modalTx.classList.remove("show");
+  rebuildMonthSelect();
+  render();
+});
+
+/* =========================
+   Categories (create + delete)
+========================= */
+function openCat(type){
+  catTitle.textContent = `Categorias (${type === "entrada" ? "Entradas" : "Saídas"})`;
+  catType.value = type;
+  catName.value = "";
+  renderCatList();
+  modalCat.classList.add("show");
+}
+
+catType.addEventListener("change", renderCatList);
+
+addCatBtn.addEventListener("click", ()=>{
+  const type = catType.value;
+  const name = (catName.value || "").trim();
+  if(!name){
+    alert("Digite o nome da categoria.");
+    return;
+  }
+  const exists = db.categories.some(c => c.type===type && c.name.toLowerCase()===name.toLowerCase());
+  if(exists){
+    alert("Essa categoria já existe.");
+    return;
+  }
+  db.categories.push({ id: cryptoId(), name, type });
+  saveDB(db);
+  catName.value = "";
+  renderCatList();
+  rebuildTxCategory();
+  render();
+});
+
+function renderCatList(){
+  const type = catType.value;
+  const cats = db.categories.filter(c=>c.type===type).sort((a,b)=>a.name.localeCompare(b.name,"pt-BR"));
+  catList.innerHTML = "";
+  if(cats.length === 0){
+    const div = document.createElement("div");
+    div.className = "hint";
+    div.textContent = "Nenhuma categoria ainda. Crie acima.";
+    catList.appendChild(div);
+    return;
+  }
+  cats.forEach(c=>{
+    const el = document.createElement("div");
+    el.className = "item";
+    el.innerHTML = `
+      <div class="itemL">
+        <b>${escapeHtml(c.name)}</b>
+        <span>Toque para apagar</span>
+      </div>
+      <div class="amt" style="color:${type==="entrada" ? "#34d399" : "#fb7185"}">${type==="entrada" ? "Entrada" : "Saída"}</div>
+    `;
+    el.addEventListener("click", ()=>{
+      // impedir apagar se existir transação usando ela
+      const used = db.transactions.some(t=>t.categoryId===c.id);
+      if(used){
+        alert("Não dá pra apagar: existe transação usando essa categoria.");
+        return;
+      }
+      if(confirm(`Apagar a categoria "${c.name}"?`)){
+        db.categories = db.categories.filter(x=>x.id!==c.id);
+        saveDB(db);
+        renderCatList();
+        rebuildTxCategory();
+        render();
+      }
+    });
+    catList.appendChild(el);
+  });
+}
+
+/* =========================
+   Render dashboard
+========================= */
+function render(){
+  const month = db.month;
+  monthLabelEl.textContent = monthLabel(month);
+
+  const monthTx = db.transactions.filter(t => monthKey(t.date) === month);
+
+  const entradas = monthTx.filter(t=>t.type==="entrada").reduce((a,t)=>a+t.value,0);
+  const saidas   = monthTx.filter(t=>t.type==="saida").reduce((a,t)=>a+t.value,0);
+
+  const balance = entradas - saidas;
+
+  balanceValue.textContent = fmt.format(balance);
+  inValue.textContent = fmt.format(entradas);
+  outValue.textContent = fmt.format(saidas);
+
+  // placeholders (você pode ligar depois com investimentos/caixinhas)
+  invValue.textContent = fmt.format(0);
+  boxValue.textContent = fmt.format(0);
+
+  // Recent list
+  recentList.innerHTML = "";
+  if(monthTx.length === 0){
+    emptyHint.textContent = "Nenhuma transação neste mês. Use + Add em Entradas ou Saídas.";
+  }else{
+    emptyHint.textContent = "";
+  }
+
+  monthTx.slice(0,12).forEach(t=>{
+    const el = document.createElement("div");
+    el.className = "item";
+    const isIn = t.type === "entrada";
+    el.innerHTML = `
+      <div class="itemL">
+        <b>${escapeHtml(t.desc)}</b>
+        <span>${escapeHtml(catNameById(t.categoryId))} • ${formatDateBR(t.date)}</span>
+      </div>
+      <div class="amt ${isIn ? "green" : "red"}">${(isIn?"+ ":"- ")+ fmt.format(t.value)}</div>
+    `;
+    el.addEventListener("click", ()=>{
+      if(confirm("Apagar esta transação?")){
+        db.transactions = db.transactions.filter(x=>x.id!==t.id);
+        saveDB(db);
+        rebuildMonthSelect();
+        render();
+      }
+    });
+    recentList.appendChild(el);
+  });
+}
+
+/* =========================
+   Backup Export/Import
+========================= */
+function exportBackup(){
+  const blob = new Blob([JSON.stringify(db, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "backup_financeiro_mateus_thais.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importBackup(){
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+  input.onchange = async () => {
+    const file = input.files?.[0];
+    if(!file) return;
+    const text = await file.text();
+    try{
+      const data = JSON.parse(text);
+      if(!data || !Array.isArray(data.categories) || !Array.isArray(data.transactions)){
+        alert("Backup inválido.");
+        return;
+      }
+      db = data;
+      if(!db.month) db.month = currentMonthKey();
+      saveDB(db);
+      rebuildMonthSelect();
+      render();
+      alert("Backup importado!");
+    }catch(e){
+      alert("Não foi possível importar esse arquivo.");
     }
-  </script>
+  };
+  input.click();
+}
+
+/* =========================
+   Tabs (só visual aqui)
+========================= */
+document.getElementById("tabs").addEventListener("click",(e)=>{
+  const t = e.target.closest(".tab");
+  if(!t) return;
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+});
+
+/* =========================
+   Utils
+========================= */
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function formatDateBR(iso){
+  const d = new Date(iso+"T00:00:00");
+  const day = String(d.getDate()).padStart(2,"0");
+  const mon = String(d.getMonth()+1).padStart(2,"0");
+  const y = d.getFullYear();
+  return `${day}/${mon}/${y}`;
+}
+
+/* init */
+rebuildMonthSelect();
+render();
+</script>
 </body>
 </html>

@@ -2,260 +2,414 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1220" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1020" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Financeiro" />
+  <meta name="format-detection" content="telephone=no" />
+
   <title>Financeiro Matheus e Thaís</title>
 
-  <link rel="manifest" href="./manifest.webmanifest?v=7" />
-  <link rel="stylesheet" href="./styles.css?v=7" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
   <div class="app">
+    <!-- TOPBAR -->
     <header class="topbar">
       <div class="brand">
-        <div class="brandIcon">💰</div>
-        <div>
-          <div class="brandTitle">Financeiro</div>
-          <div class="brandSub">Matheus e Thaís</div>
+        <div class="appicon"><span>💰</span></div>
+        <div class="brandtxt">
+          <div class="brandtitle">Financeiro</div>
+          <div class="brandsub">Matheus e Thaís</div>
         </div>
       </div>
 
-      <div class="topActions">
-        <button class="iconBtn" id="btnBackup" title="Backup">⬇️</button>
-        <button class="iconBtn" id="btnMoreTop" title="Mais">⋯</button>
+      <div class="topactions">
+        <button class="iconbtn" id="btnExport" title="Exportar backup">⬇️</button>
+        <button class="iconbtn" id="btnImport" title="Importar backup">📥</button>
       </div>
     </header>
 
-    <main class="content">
+    <!-- PAGES -->
+    <main class="pages">
       <!-- HOME -->
-      <section class="view active" id="view-home">
-        <div class="card heroCard">
-          <div class="cardRow">
-            <div class="muted">Total Balance</div>
-            <div class="chip" id="monthBadge">—</div>
+      <section class="page active" id="page-home">
+        <section class="hero glass">
+          <div class="herotop">
+            <div class="herolabel">
+              <div class="kicker">Total Balance</div>
+              <div class="subkicker" id="monthLabel">Mês</div>
+            </div>
+
+            <div class="monthpill">
+              <select id="monthSelect" aria-label="Selecionar mês"></select>
+              <span class="caret">⌄</span>
+            </div>
           </div>
 
-          <div class="balanceValue" id="balanceValue">R$ 0,00</div>
+          <div class="herovalue" id="balanceValue">R$ 0,00</div>
 
-          <div class="pillsRow">
-            <button class="pill pillIncome" id="pillIncome">
-              <div class="pillIcon">＋</div>
-              <div class="pillMain">
-                <div class="pillTitle">Entradas</div>
-                <div class="pillValue" id="sumIncome">R$ 0,00</div>
+          <div class="heroactions">
+            <button class="pillaction in" id="btnQuickIncome">
+              <div class="pillico">＋</div>
+              <div class="pilltxt">
+                <div class="pilltitle">Entradas</div>
+                <div class="pillvalue" id="incomeValue">R$ 0,00</div>
               </div>
-              <div class="pillArrow">›</div>
+              <div class="pillarrow">›</div>
             </button>
 
-            <button class="pill pillExpense" id="pillExpense">
-              <div class="pillIcon">－</div>
-              <div class="pillMain">
-                <div class="pillTitle">Saídas</div>
-                <div class="pillValue" id="sumExpense">R$ 0,00</div>
+            <button class="pillaction out" id="btnQuickExpense">
+              <div class="pillico">－</div>
+              <div class="pilltxt">
+                <div class="pilltitle">Saídas</div>
+                <div class="pillvalue" id="expenseValue">R$ 0,00</div>
               </div>
-              <div class="pillArrow">›</div>
+              <div class="pillarrow">›</div>
             </button>
           </div>
 
-          <div class="miniRow">
-            <div class="miniBox">
-              <div class="miniLabel">Investido</div>
-              <div class="miniValue" id="sumInvest">R$ 0,00</div>
+          <div class="heromini">
+            <div class="minicard">
+              <div class="minilabel">Investido</div>
+              <div class="minivalue" id="investedValue">R$ 0,00</div>
             </div>
-            <div class="miniBox">
-              <div class="miniLabel">Reserva / Caixinhas</div>
-              <div class="miniValue" id="sumBoxes">R$ 0,00</div>
+            <div class="minicard">
+              <div class="minilabel">Reserva / Caixinhas</div>
+              <div class="minivalue" id="boxesValue">R$ 0,00</div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="card">
-          <div class="cardRow">
-            <div class="cardTitle">Visão do mês</div>
-            <div class="filters">
-              <select id="selectMonth"></select>
+        <section class="section glass">
+          <div class="sectionhead">
+            <div>
+              <div class="sectiontitle">Visão do mês</div>
+              <div class="sectionsub">Gráficos reais (Chart.js)</div>
+            </div>
+
+            <div class="segmented" id="rangeSeg">
+              <button class="segbtn active" data-range="month">Mês</button>
+              <button class="segbtn" data-range="year">Ano</button>
             </div>
           </div>
 
-          <div class="chartGrid">
-            <div class="chartCard">
-              <div class="chartTitle">Despesas por categoria</div>
-              <canvas id="chartExpenses"></canvas>
+          <div class="chartgrid">
+            <div class="chartcard">
+              <div class="charttitle">Despesas por categoria</div>
+              <canvas id="donut" height="190"></canvas>
             </div>
-            <div class="chartCard">
-              <div class="chartTitle">Saldo ao longo do mês</div>
-              <canvas id="chartBalance"></canvas>
-            </div>
-          </div>
-        </div>
 
-        <div class="card">
-          <div class="cardRow">
-            <div class="cardTitle">Gastos recentes</div>
-            <button class="pillBtn" id="btnAddFromHome">＋ Adicionar</button>
+            <div class="chartcard">
+              <div class="charttitle">Entradas x Saídas</div>
+              <canvas id="line" height="190"></canvas>
+            </div>
           </div>
-          <div class="list" id="recentList"></div>
-        </div>
+        </section>
+
+        <section class="section glass">
+          <div class="sectionhead">
+            <div>
+              <div class="sectiontitle">Gastos recentes</div>
+              <div class="sectionsub">Com barras de orçamento</div>
+            </div>
+            <button class="ghost" id="btnGoTransactions">Ver todos</button>
+          </div>
+
+          <div class="recent" id="recentList"></div>
+        </section>
+
+        <section class="section glass">
+          <div class="sectionhead">
+            <div>
+              <div class="sectiontitle">Metas & Caixinhas</div>
+              <div class="sectionsub">Reserva por objetivo</div>
+            </div>
+            <button class="ghost" id="btnGoGoals">Gerenciar</button>
+          </div>
+
+          <div class="goals" id="goalsPreview"></div>
+        </section>
+
+        <div class="spacer"></div>
       </section>
 
-      <!-- ADD -->
-      <section class="view" id="view-add">
-        <div class="card formCard">
-          <div class="cardRow">
-            <div class="cardTitle">Adicionar</div>
-            <div class="badge" id="badgeType">Saída</div>
-          </div>
-
-          <div class="typeToggle">
-            <button class="typeBtn" data-type="income">Entrada</button>
-            <button class="typeBtn active" data-type="expense">Saída</button>
-            <button class="typeBtn" data-type="investment">Invest.</button>
-            <button class="typeBtn" data-type="box">Caixinha</button>
-          </div>
-
-          <div class="formGrid">
-            <label class="field">
-              <span>Valor (R$)</span>
-              <input id="txAmount" inputmode="decimal" placeholder="0,00" />
-            </label>
-
-            <label class="field">
-              <span>Data</span>
-              <input id="txDate" type="date" />
-            </label>
-
-            <label class="field" style="grid-column: 1 / -1;">
-              <span>Categoria</span>
-              <select id="txCategory"></select>
-            </label>
-
-            <label class="field" style="grid-column: 1 / -1;">
-              <span>Descrição</span>
-              <input id="txNote" placeholder="Ex: Mercado, Uber, PIX..." />
-            </label>
-          </div>
-
-          <div class="formActions">
-            <button class="btnPrimary" id="btnSaveTx">Salvar</button>
-            <button class="btnSecondary" id="btnCancelTx">Cancelar</button>
-          </div>
-
-          <div class="hint">Toque numa transação em “Gastos recentes” para editar/apagar.</div>
-        </div>
-      </section>
-
-      <!-- CATEGORIES -->
-      <section class="view" id="view-categories">
-        <div class="card">
-          <div class="cardRow">
-            <div class="cardTitle">Categorias</div>
-            <button class="pillBtn" id="btnAddCategory">＋ Nova</button>
-          </div>
-
-          <div class="segmented">
-            <button class="segBtn active" data-catfilter="expense">Saídas</button>
-            <button class="segBtn" data-catfilter="income">Entradas</button>
-            <button class="segBtn" data-catfilter="investment">Invest.</button>
-            <button class="segBtn" data-catfilter="box">Caixinhas</button>
-          </div>
-
-          <div class="list" id="catList"></div>
-        </div>
-      </section>
-
-      <!-- INVEST -->
-      <section class="view" id="view-invest">
-        <div class="card">
-          <div class="cardRow">
-            <div class="cardTitle">Investimentos</div>
-            <button class="pillBtn" id="btnAddInvest">＋ Aportar</button>
-          </div>
-
-          <div class="investTop">
-            <div class="investBox">
-              <div class="miniLabel">Total investido</div>
-              <div class="investValue" id="investTotal">R$ 0,00</div>
+      <!-- TRANSAÇÕES -->
+      <section class="page" id="page-transactions">
+        <section class="pagetop glass">
+          <div class="ptrow">
+            <div>
+              <div class="sectiontitle">Transações</div>
+              <div class="sectionsub">Toque para excluir</div>
             </div>
-            <div class="investBox">
-              <div class="miniLabel">Aportes no mês</div>
-              <div class="investValue" id="investMonth">R$ 0,00</div>
+            <button class="ghost" id="btnAddTxTop">Adicionar</button>
+          </div>
+
+          <div class="filters">
+            <div class="filterpill">
+              <span>Tipo</span>
+              <select id="filterType">
+                <option value="all">Todos</option>
+                <option value="income">Entradas</option>
+                <option value="expense">Saídas</option>
+              </select>
+            </div>
+
+            <div class="filterpill">
+              <span>Mês</span>
+              <select id="filterMonth"></select>
             </div>
           </div>
+        </section>
 
-          <div class="chartCard" style="margin-top:12px;">
-            <div class="chartTitle">Aportes por tipo</div>
-            <canvas id="chartInvest"></canvas>
-          </div>
-
-          <div class="cardRow" style="margin-top:12px;">
-            <div class="cardTitle">Últimos aportes</div>
-          </div>
-          <div class="list" id="investList"></div>
-        </div>
+        <section class="list glass" id="txList"></section>
+        <div class="spacer"></div>
       </section>
 
-      <!-- GOALS -->
-      <section class="view" id="view-goals">
-        <div class="card">
-          <div class="cardRow">
-            <div class="cardTitle">Metas & Caixinhas</div>
-            <button class="pillBtn" id="btnAddGoal">＋ Criar</button>
+      <!-- CATEGORIAS -->
+      <section class="page" id="page-categories">
+        <section class="pagetop glass">
+          <div class="ptrow">
+            <div>
+              <div class="sectiontitle">Categorias</div>
+              <div class="sectionsub">Orçamentos por mês</div>
+            </div>
+            <button class="ghost" id="btnAddCategory">Adicionar</button>
           </div>
+        </section>
 
-          <div class="segmented">
-            <button class="segBtn active" data-goalfilter="all">Tudo</button>
-            <button class="segBtn" data-goalfilter="box">Caixinhas</button>
-            <button class="segBtn" data-goalfilter="goal">Metas</button>
-          </div>
-
-          <div class="list" id="goalList"></div>
-        </div>
+        <section class="cats" id="catsGrid"></section>
+        <div class="spacer"></div>
       </section>
 
-      <!-- MORE -->
-      <section class="view" id="view-more">
-        <div class="card">
-          <div class="cardRow">
-            <div class="cardTitle">Backup</div>
-            <div class="chip">Privado • Só no seu iPhone</div>
+      <!-- INVESTIMENTOS -->
+      <section class="page" id="page-investments">
+        <section class="pagetop glass">
+          <div class="ptrow">
+            <div>
+              <div class="sectiontitle">Investimentos</div>
+              <div class="sectionsub">Aportes e evolução</div>
+            </div>
+            <button class="ghost" id="btnAddInvestment">Novo</button>
           </div>
+        </section>
 
-          <div class="formActions">
-            <button class="btnPrimary" id="btnExport">Exportar Backup</button>
-            <button class="btnSecondary" id="btnImport">Importar</button>
+        <section class="section glass">
+          <div class="sectionhead">
+            <div>
+              <div class="sectiontitle">Total investido</div>
+              <div class="sectionsub">Somatório dos aportes</div>
+            </div>
+            <div class="bigpill" id="investTotalPill">R$ 0,00</div>
           </div>
+          <canvas id="investLine" height="190"></canvas>
+        </section>
 
-          <input id="fileImport" type="file" accept="application/json" style="display:none" />
+        <section class="list glass" id="invList"></section>
+        <div class="spacer"></div>
+      </section>
 
-          <div class="formActions" style="margin-top:12px;">
-            <button class="btnDanger" id="btnReset">Zerar tudo</button>
+      <!-- METAS / CAIXINHAS -->
+      <section class="page" id="page-goals">
+        <section class="pagetop glass">
+          <div class="ptrow">
+            <div>
+              <div class="sectiontitle">Metas & Caixinhas</div>
+              <div class="sectionsub">Adicionar e editar reservas</div>
+            </div>
+            <button class="ghost" id="btnAddGoal">Adicionar</button>
           </div>
+        </section>
 
-          <div class="hint">Dica: antes de atualizar os códigos, exporta o backup.</div>
-        </div>
+        <section class="goals full" id="goalsList"></section>
+        <div class="spacer"></div>
       </section>
     </main>
 
-    <nav class="bottomNav">
-      <div class="navShell">
-        <button class="navBtn active" data-go="home">🏠 <span>Início</span></button>
-        <button class="navBtn" data-go="categories">🧩 <span>Categorias</span></button>
-        <button class="navBtn center" data-go="add">＋</button>
-        <button class="navBtn" data-go="invest">📈 <span>Invest.</span></button>
-        <button class="navBtn" data-go="goals">🎯 <span>Metas</span></button>
-      </div>
+    <!-- BOTTOM NAV -->
+    <nav class="bottomnav glass">
+      <button class="tab active" data-tab="home">🏠<span>Início</span></button>
+      <button class="tab" data-tab="transactions">🧾<span>Trans.</span></button>
+
+      <button class="fab" id="fabAdd" aria-label="Adicionar">＋</button>
+
+      <button class="tab" data-tab="categories">🧩<span>Cat.</span></button>
+      <button class="tab" data-tab="investments">📈<span>Invest</span></button>
+      <button class="tab" data-tab="goals">🎯<span>Metas</span></button>
     </nav>
+
+    <!-- MODAL TX -->
+    <div class="modal" id="modalTx" aria-hidden="true">
+      <div class="modalcard glass">
+        <div class="modalhead">
+          <div class="modaltitle">Adicionar</div>
+          <button class="iconbtn" id="btnCloseTx">✕</button>
+        </div>
+
+        <div class="modalbody">
+          <div class="row2">
+            <label class="field">
+              <span>Tipo</span>
+              <select id="txType">
+                <option value="expense">Saída</option>
+                <option value="income">Entrada</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Data</span>
+              <input type="date" id="txDate" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Descrição</span>
+            <input type="text" id="txDesc" placeholder="Ex: Supermercado" maxlength="40" />
+          </label>
+
+          <div class="row2">
+            <label class="field">
+              <span>Categoria</span>
+              <select id="txCategory"></select>
+            </label>
+            <label class="field">
+              <span>Valor (R$)</span>
+              <input type="number" id="txAmount" step="0.01" inputmode="decimal" placeholder="0,00" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Caixinha (opcional)</span>
+            <select id="txGoal">
+              <option value="">Nenhuma</option>
+            </select>
+          </label>
+
+          <div class="actions">
+            <button class="btn secondary" id="btnCancelTx">Cancelar</button>
+            <button class="btn primary" id="btnSaveTx">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CATEGORY -->
+    <div class="modal" id="modalCat" aria-hidden="true">
+      <div class="modalcard glass">
+        <div class="modalhead">
+          <div class="modaltitle">Nova categoria</div>
+          <button class="iconbtn" id="btnCloseCat">✕</button>
+        </div>
+
+        <div class="modalbody">
+          <label class="field">
+            <span>Nome</span>
+            <input type="text" id="catName" maxlength="24" placeholder="Ex: Saúde" />
+          </label>
+
+          <div class="row2">
+            <label class="field">
+              <span>Orçamento mensal (R$)</span>
+              <input type="number" id="catBudget" step="0.01" inputmode="decimal" placeholder="0,00" />
+            </label>
+            <label class="field">
+              <span>Ícone (emoji)</span>
+              <input type="text" id="catEmoji" maxlength="2" placeholder="Ex: 🛒" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Cor</span>
+            <input type="color" id="catColor" value="#4aa3ff" />
+          </label>
+
+          <div class="actions">
+            <button class="btn secondary" id="btnCancelCat">Cancelar</button>
+            <button class="btn primary" id="btnSaveCat">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL GOAL -->
+    <div class="modal" id="modalGoal" aria-hidden="true">
+      <div class="modalcard glass">
+        <div class="modalhead">
+          <div class="modaltitle">Meta / Caixinha</div>
+          <button class="iconbtn" id="btnCloseGoal">✕</button>
+        </div>
+
+        <div class="modalbody">
+          <label class="field">
+            <span>Nome</span>
+            <input type="text" id="goalName" maxlength="26" placeholder="Ex: Reserva Emergência" />
+          </label>
+
+          <div class="row2">
+            <label class="field">
+              <span>Meta (R$)</span>
+              <input type="number" id="goalTarget" step="0.01" inputmode="decimal" placeholder="0,00" />
+            </label>
+            <label class="field">
+              <span>Atual (R$)</span>
+              <input type="number" id="goalCurrent" step="0.01" inputmode="decimal" placeholder="0,00" />
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="btn secondary" id="btnCancelGoal">Cancelar</button>
+            <button class="btn primary" id="btnSaveGoal">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL INVEST -->
+    <div class="modal" id="modalInv" aria-hidden="true">
+      <div class="modalcard glass">
+        <div class="modalhead">
+          <div class="modaltitle">Novo aporte</div>
+          <button class="iconbtn" id="btnCloseInv">✕</button>
+        </div>
+
+        <div class="modalbody">
+          <div class="row2">
+            <label class="field">
+              <span>Data</span>
+              <input type="date" id="invDate" />
+            </label>
+            <label class="field">
+              <span>Valor (R$)</span>
+              <input type="number" id="invAmount" step="0.01" inputmode="decimal" placeholder="0,00" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Descrição</span>
+            <input type="text" id="invDesc" maxlength="40" placeholder="Ex: Aporte CDB" />
+          </label>
+
+          <div class="actions">
+            <button class="btn secondary" id="btnCancelInv">Cancelar</button>
+            <button class="btn primary" id="btnSaveInv">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPORT FILE -->
+    <input type="file" id="fileImport" accept="application/json" hidden />
   </div>
 
-  <script src="./app.js?v=7"></script>
+  <script src="./app.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js?v=7").catch(()=>{});
-      });
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
     }
   </script>
 </body>
